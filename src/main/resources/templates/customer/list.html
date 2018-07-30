@@ -48,7 +48,7 @@
             <td th:text="${customer.agreementMoney}">6</td>
             <td th:text="${customer.inRoomNum}">6</td>
             <td><a th:href="@{/toEdit(id=${customer.customerId})}">编辑</a></td>
-            <td><a th:href="@{/delete(id=${customer.customerId})}">删除</a></td>
+            <td><a th:href="@{/customer/delete(id=${customer.customerId})}">删除</a></td>
         </tr>
         </tbody>
     </table>

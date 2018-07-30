@@ -45,4 +45,14 @@ public class BabyServiceImpl implements BabyService {
             return false;
         }
     }
+
+    @Override
+    public int deleteByCustomerId(Long customerId) {
+        return babyRepository.deleteByCustomerId(customerId);
+    }
+
+    @Override
+    public int deleteBabiesByCustomerId(Long customerId) {
+        return babyRepository.deleteBabiesByCustomerId((customerId));
+    }
 }

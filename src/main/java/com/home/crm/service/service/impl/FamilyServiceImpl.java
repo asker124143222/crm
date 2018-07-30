@@ -43,4 +43,9 @@ public class FamilyServiceImpl implements FamilyService {
             return false;
         }
     }
+
+    @Override
+    public int deleteByCustomerId(Long id) {
+        return familyRepository.deleteFamiliesByCustomerId(id);
+    }
 }

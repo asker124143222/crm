@@ -16,4 +16,6 @@ public interface FamilyService {
 
     boolean delete(Long id);
 
+    int deleteByCustomerId(Long id);
+
 }

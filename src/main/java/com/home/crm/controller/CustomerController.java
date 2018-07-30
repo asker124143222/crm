@@ -90,6 +90,17 @@ public class CustomerController {
         return mav;
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @RequestMapping("/delete")
+    public String delete(Long id)
+    {
+        //id = 3L;
+        customerService.delete(id);
+        babyService.deleteByCustomerId(id);
+        familyService.deleteByCustomerId(id);
+        return "redirect:/customer/list";
+    }
+
     private void goBug()
     {
         int i = 9/0;

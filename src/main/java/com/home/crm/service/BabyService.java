@@ -19,4 +19,8 @@ public interface BabyService {
     Baby save(Baby baby);
 
     boolean delete(Long id);
+
+    int deleteByCustomerId(Long customerId);
+
+    int deleteBabiesByCustomerId(Long customerId);
 }

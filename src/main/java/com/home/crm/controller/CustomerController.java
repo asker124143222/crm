@@ -6,6 +6,9 @@ import com.home.crm.entity.Family;
 import com.home.crm.service.BabyService;
 import com.home.crm.service.CustomerService;
 import com.home.crm.service.FamilyService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,8 +48,14 @@ public class CustomerController {
     public ModelAndView list() {
         ModelAndView mav = new ModelAndView();
         Sort sort = new Sort(Sort.Direction.ASC, "customerId");
-        List<Customer> customers = customerService.findAll(sort);
-        mav.addObject("customers", customers);
+//        List<Customer> customers = customerService.findAll(sort);
+
+        int page = 0;
+        int size = 10;
+
+        Pageable pageable = PageRequest.of(page,size,sort);
+        Page<Customer> customerPage = customerService.findAllByPage(pageable);
+        mav.addObject("customerPage", customerPage);
         mav.setViewName("customer/list");
         return mav;
     }
@@ -83,9 +92,11 @@ public class CustomerController {
     public ModelAndView edit(@PathVariable("id")Long id)
     {
         ModelAndView mav = new ModelAndView();
+        List<Baby> babyList = babyService.findAllByCustomerId(id);
+        List<Family> familyList = familyService.findByCustomerId(id);
         mav.addObject("customer",customerService.findById(id).orElse(new Customer()));
-        mav.addObject("baby",babyService.findAllByCustomerId(id).get(0));
-        mav.addObject("family",familyService.findByCustomerId(id));
+        mav.addObject("baby",babyList.size()>0?babyList.get(0):new Baby());
+        mav.addObject("family",familyList.size()>0?familyList.get(0):new Family());
         mav.setViewName("/customer/add");
         return mav;
     }
@@ -104,8 +115,15 @@ public class CustomerController {
     @RequestMapping("/query")
     public ModelAndView query(String customerName) {
         ModelAndView mav = new ModelAndView();
-        List<Customer> customers = customerService.findByCustomerNameContains(customerName);
-        mav.addObject("customers", customers);
+//        List<Customer> customers = customerService.findByCustomerNameContains(customerName);
+//        mav.addObject("customers", customers);
+        Sort sort = new Sort(Sort.Direction.ASC, "customerId");
+        int page = 0;
+        int size = 10;
+
+        Pageable pageable = PageRequest.of(page,size,sort);
+        Page<Customer> customerPage = customerService.findByCustomerNameContains(customerName,pageable);
+        mav.addObject("customerPage",customerPage);
         mav.setViewName("customer/list");
         return mav;
     }

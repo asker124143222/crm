@@ -40,7 +40,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr  th:each="customer : ${customers}">
+        <tr  th:each="customer : ${customerPage.content}">
             <th scope="row" th:text="${customer.customerId}">1</th>
             <td th:text="${customer.filesNo}">neo</td>
             <td><a th:href="@{/customer/toEdit/{id}(id=${customer.customerId})}" th:text="${customer.customerName}">detail</a></td>

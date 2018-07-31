@@ -3,6 +3,8 @@ package com.home.crm.service.service.impl;
 import com.home.crm.entity.Customer;
 import com.home.crm.repository.CustomerRepository;
 import com.home.crm.service.CustomerService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +29,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public Page<Customer> findAllByPage(Pageable pageable) {
+        return customerRepository.findAll(pageable);
+    }
+
+    @Override
     public List<Customer> findAll(Sort sort) {
         return customerRepository.findAll(sort);
     }
@@ -39,6 +46,11 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public List<Customer> findByCustomerNameContains(String customerName) {
         return customerRepository.findByCustomerNameContains(customerName);
+    }
+
+    @Override
+    public Page<Customer> findByCustomerNameContains(String customerName, Pageable pageable) {
+        return customerRepository.findCustomersByCustomerNameContains(customerName,pageable);
     }
 
     @Override

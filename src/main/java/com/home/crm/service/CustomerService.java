@@ -1,6 +1,8 @@
 package com.home.crm.service;
 
 import com.home.crm.entity.Customer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
@@ -15,11 +17,15 @@ import java.util.Optional;
 public interface CustomerService {
     List<Customer> findAll();
 
+    Page<Customer> findAllByPage(Pageable pageable);
+
     List<Customer> findAll(Sort sort);
 
     Optional<Customer> findById(Long id);
 
     List<Customer> findByCustomerNameContains(String customerName);
+
+    Page<Customer> findByCustomerNameContains(String customerName,Pageable pageable);
 
     List<Customer> findByIdCard(String idCard);
 

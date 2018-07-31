@@ -6,6 +6,8 @@ import com.home.crm.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @Author: xu.dm
  * @Date: 2018/7/19 22:06
@@ -23,8 +25,8 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public Family findByCustomerId(Long customerId) {
-        return familyRepository.findByCustomerId(customerId).get(0);
+    public List<Family> findByCustomerId(Long customerId) {
+        return familyRepository.findByCustomerId(customerId);
     }
 
     @Override

@@ -362,7 +362,7 @@
             </div>
 
             <div class="col-sm-1">
-                <a href="/customer/list" th:href="@{/customer/list}" class="btn btn-primary">返 回</a>
+                <a href="/customer/list" th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex})}" class="btn btn-primary">返 回</a>
             </div>
 
         </div>

@@ -44,18 +44,22 @@ public class CustomerController {
 //        return "redirect:/list";
 //    }
 
-    @RequestMapping("/list")
-    public ModelAndView list() {
+    @RequestMapping("/list/{pageNo}")
+    public ModelAndView list(@PathVariable("pageNo")Integer pageNo) {
         ModelAndView mav = new ModelAndView();
         Sort sort = new Sort(Sort.Direction.ASC, "customerId");
 //        List<Customer> customers = customerService.findAll(sort);
-
-        int page = 0;
+        if(pageNo==null || pageNo < 1 )
+            pageNo = 1;
+        int page = pageNo;
         int size = 10;
 
-        Pageable pageable = PageRequest.of(page,size,sort);
+        Pageable pageable = PageRequest.of(page-1,size,sort);
         Page<Customer> customerPage = customerService.findAllByPage(pageable);
+//        customerPage.getNumberOfElements()
+        pageNo = customerPage.getNumber()+1;
         mav.addObject("customerPage", customerPage);
+        mav.addObject("pageIndex",pageNo);
         mav.setViewName("customer/list");
         return mav;
     }
@@ -85,11 +89,12 @@ public class CustomerController {
         babyService.save(baby);
         familyService.save(family);
 
-        return "redirect:/customer/list";
+        //还需要改进，列出最近更新的
+        return "redirect:/customer/list/1";
     }
 
-    @RequestMapping(value = "/toEdit/{id}")
-    public ModelAndView edit(@PathVariable("id")Long id)
+    @RequestMapping(value = "/toEdit/{id}/{pageNo}")
+    public ModelAndView edit(@PathVariable("id")Long id,@PathVariable("pageNo")Long pageNo)
     {
         ModelAndView mav = new ModelAndView();
         List<Baby> babyList = babyService.findAllByCustomerId(id);
@@ -97,7 +102,8 @@ public class CustomerController {
         mav.addObject("customer",customerService.findById(id).orElse(new Customer()));
         mav.addObject("baby",babyList.size()>0?babyList.get(0):new Baby());
         mav.addObject("family",familyList.size()>0?familyList.get(0):new Family());
-        mav.setViewName("/customer/add");
+        mav.addObject("pageIndex",pageNo);
+        mav.setViewName("customer/add");
         return mav;
     }
 
@@ -109,7 +115,7 @@ public class CustomerController {
         customerService.delete(id);
         babyService.deleteByCustomerId(id);
         familyService.deleteByCustomerId(id);
-        return "redirect:/customer/list";
+        return "redirect:/customer/list/1";
     }
 
     @RequestMapping("/query")

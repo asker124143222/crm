@@ -13,7 +13,7 @@ import java.util.Optional;
  */
 public interface FamilyRepository extends JpaRepository<Family,Long> {
 
-    Family findByCustomerId(Long customerId);
+    List<Family> findByCustomerId(Long customerId);
 
     int deleteFamiliesByCustomerId(Long customerId);
 }

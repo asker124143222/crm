@@ -101,6 +101,15 @@ public class CustomerController {
         return "redirect:/customer/list";
     }
 
+    @RequestMapping("/query")
+    public ModelAndView query(String customerName) {
+        ModelAndView mav = new ModelAndView();
+        List<Customer> customers = customerService.findByCustomerNameContains(customerName);
+        mav.addObject("customers", customers);
+        mav.setViewName("customer/list");
+        return mav;
+    }
+
     private void goBug()
     {
         int i = 9/0;

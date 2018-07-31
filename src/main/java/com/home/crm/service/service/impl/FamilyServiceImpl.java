@@ -24,7 +24,7 @@ public class FamilyServiceImpl implements FamilyService {
 
     @Override
     public Family findByCustomerId(Long customerId) {
-        return familyRepository.findByCustomerId(customerId);
+        return familyRepository.findByCustomerId(customerId).get(0);
     }
 
     @Override

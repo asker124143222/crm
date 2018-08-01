@@ -108,8 +108,8 @@ public class CustomerController {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    @RequestMapping("/delete")
-    public String delete(Long id)
+    @RequestMapping("/delete/{id}")
+    public String delete(@PathVariable("id") Long id)
     {
         //id = 3L;
         customerService.delete(id);

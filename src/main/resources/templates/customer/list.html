@@ -50,22 +50,26 @@
             <td th:text="${customer.agreementMoney}">6</td>
             <td th:text="${customer.inRoomNum}">6</td>
             <td><a th:href="@{/customer/toEdit/{id}/{pageNo}(id=${customer.customerId},pageNo=${pageIndex})}">编辑</a></td>
-            <td><a th:href="@{/customer/delete(id=${customer.customerId})}">删除</a></td>
+            <td><a th:href="@{/customer/delete/{id}(id=${customer.customerId})}">删除</a></td>
         </tr>
         </tbody>
     </table>
-    <ul class="pagination" >
-        <li th:class="${pageIndex==1}?'disabled' : ''"><a href="#">上一页</a></li>
-        <li th:if="${pageIndex-3 >=1}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex-3})}" th:text="${pageIndex -3}" >1</a></li>
-        <li th:if="${pageIndex-2 >=1}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex-2})}" th:text="${pageIndex -2}" >1</a></li>
-        <li th:if="${pageIndex-1 >=1}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex-1})}" th:text="${pageIndex -1}" >1</a></li>
-        <li class="active"><a href="#" th:text="${pageIndex}" >1</a></li>
-        <li th:if="${pageIndex+1 <=customerPage.getTotalPages()}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex+1})}" th:text="${pageIndex +1}" >1</a></li>
-        <li th:if="${pageIndex+2 <=customerPage.getTotalPages()}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex+2})}" th:text="${pageIndex +2}" >1</a></li>
-        <li th:if="${pageIndex+3 <=customerPage.getTotalPages()}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex+3})}" th:text="${pageIndex +3}" >1</a></li>
+    <div class="container text-right">
+        <ul class="pagination" >
+            <li th:class="${pageIndex==1}?'disabled' : ''" th:if="${pageIndex-1 >=1}"><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex-1})}">上一页</a></li>
+            <li th:if="${pageIndex-3 >=1}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex-3})}" th:text="${pageIndex -3}" >1</a></li>
+            <li th:if="${pageIndex-2 >=1}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex-2})}" th:text="${pageIndex -2}" >1</a></li>
+            <li th:if="${pageIndex-1 >=1}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex-1})}" th:text="${pageIndex -1}" >1</a></li>
+            <li class="active"><a href="#" th:text="${pageIndex}" >1</a></li>
+            <li th:if="${pageIndex+1 <=customerPage.getTotalPages()}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex+1})}" th:text="${pageIndex +1}" >1</a></li>
+            <li th:if="${pageIndex+2 <=customerPage.getTotalPages()}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex+2})}" th:text="${pageIndex +2}" >1</a></li>
+            <li th:if="${pageIndex+3 <=customerPage.getTotalPages()}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex+3})}" th:text="${pageIndex +3}" >1</a></li>
 
-        <li th:class="${pageIndex==customerPage.getTotalPages()}?'disabled' : ''" ><a href="#">下一页</a></li>
-    </ul><br>
+            <li th:class="${pageIndex==customerPage.getTotalPages()}?'disabled' : ''" th:if="${pageIndex+1 <=customerPage.getTotalPages()}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex+1})}">下一页</a></li>
+        </ul>
+    </div>
+
+    <br>
 </div>
 
 

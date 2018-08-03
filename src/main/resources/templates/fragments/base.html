@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/2005/Atom">
 
-<head th:fragment="common_header(title,links)">
+<head th:fragment="common_header(title,links,scrpits)">
     <title th:replace="${title}">The base page</title>
 
     <!-- Common styles and scripts -->
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--<link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"></link>-->
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"></link>
 
+    <th:block th:replace="${links}" />
 
     <!--jquery要放在前面-->
-    <script src="../static/js/jquery-3.3.1.min.js" th:src="@{/js/jquery-3.3.1.min.js}"></script>
-    <script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <script src="../../static/js/jquery-3.3.1.min.js" th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
 
     <!--/* Per-page placeholder for additional links */-->
-    <th:block th:replace="${links}" />
+
+    <th:block th:replace="${scrpits}" />
 
 </head>
 <body>

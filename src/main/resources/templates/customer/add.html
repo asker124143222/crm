@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
       xmlns="http://www.w3.org/1999/xhtml"
-      layout:decorator="index"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.w3.org/1999/xhtml"
+      layout:decorator="~{index}"
 >
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--<link rel="stylesheet" href="bootstrap/css/bootstrap.css">-->
-    <!--<link rel="stylesheet" href="bootstrap/css/bootstrapValidator.min.css">-->
-    <!--<link rel="stylesheet" href="bootstrap/css/bootstrap-datetimepicker.css">-->
 
-    <!--<script src="jquery/jquery-3.3.1.min.js"></script>-->
-    <!--<script src="bootstrap/js/bootstrap.js"></script>-->
-    <!--<script src="bootstrap/js/bootstrapValidator.min.js"></script>-->
-    <!--<script src="bootstrap/js/bootstrap-datetimepicker.js"></script>-->
-    <!--<script src="bootstrap/js/bootstrap-datetimepicker.zh-TW.js"></script>-->
+<head>
+    <!--<meta charset="UTF-8">-->
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <!--<link rel="stylesheet" href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">-->
+    <link rel="stylesheet" href="../../static/css/bootstrapValidator.min.css" th:href="@{/css/bootstrapValidator.min.css}">
+    <link rel="stylesheet" href="../../static/css/bootstrap-datetimepicker.css" th:href="@{/css/bootstrap-datetimepicker.css}">
+
+
+    <script src="../../static/js/bootstrapValidator.min.js" th:src="@{/js/bootstrapValidator.min.js}"></script>
+    <script src="../../static/js/bootstrap-datetimepicker.js" th:src="@{/js/bootstrap-datetimepicker.js}"></script>
+    <script src="../../static/js/bootstrap-datetimepicker.zh-TW.js" th:src="@{/js/bootstrap-datetimepicker.zh-TW.js}"></script>
 
     <title>新增</title>
     <style>
@@ -40,10 +40,9 @@
 
 
 </head>
-<body class="">
-<br/>
+<body >
 
-<div layout:fragment="content">
+<div class="container" layout:fragment="content">
     <form class="form-horizontal" id="formAdd" action="#" th:action="@{/customer/add}" method="post">
         <input type="hidden" name="customerId" th:value="${customer.customerId}"/>
         <div class="divBorder">
@@ -369,43 +368,41 @@
 
     </form>
 
-</div>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        var orignWidth; //= $("input[type='text']").outerWidth()+'px';
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var orignWidth; //= $("input[type='text']").outerWidth()+'px';
 //        console.log(orignWidth);
-        var orignHeight; // = $("input[type='text']").outerHeight()+'px';
+            var orignHeight; // = $("input[type='text']").outerHeight()+'px';
 //        console.log(orignHeight);
 
 
-        $("input[type='text']").focus(function(){
-            orignWidth = $(this).outerWidth()+'px';
-            orignHeight = $(this).outerHeight()+'px';
-            $(this).animate({"width":orignWidth,"height":"60px"})
-        }).blur(function(){
-            $(this).animate({"width":orignWidth,"height":orignHeight})
-        });
+            $("input[type='text']").focus(function(){
+                orignWidth = $(this).outerWidth()+'px';
+                orignHeight = $(this).outerHeight()+'px';
+                $(this).animate({"width":orignWidth,"height":"60px"})
+            }).blur(function(){
+                $(this).animate({"width":orignWidth,"height":orignHeight})
+            });
 
-        $('#formAdd').bootstrapValidator({
-            message: 'This value is not valid',
-            feedbackIcons: {/*输入框不同状态，显示图片的样式*/
-                valid: 'glyphicon glyphicon-ok',
-                invalid: 'glyphicon glyphicon-remove',
-                validating: 'glyphicon glyphicon-refresh'
-            },
-            fields:{
-                customerName: {/*键名username和input name值对应*/
-                    message: 'The customer is not valid',
-                    validators: {
-                        notEmpty: {/*非空提示*/
-                            message: '用户名不能为空'
-                        },
-                        stringLength: {/*长度提示*/
-                            min: 6,
-                            max: 30,
-                            message: '用户名长度必须在6到30之间'
-                        }
+            $('#formAdd').bootstrapValidator({
+                message: 'This value is not valid',
+                feedbackIcons: {/*输入框不同状态，显示图片的样式*/
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields:{
+                    customerName: {/*键名username和input name值对应*/
+                        message: 'The customer is not valid',
+                        validators: {
+                            notEmpty: {/*非空提示*/
+                                message: '用户名不能为空'
+                            },
+                            stringLength: {/*长度提示*/
+                                min: 6,
+                                max: 30,
+                                message: '用户名长度必须在6到30之间'
+                            }
 //                        ,
 //                        callback: {/*自定义，可以在这里与其他输入项联动校验*/
 //                            message: '只能是wm5920',
@@ -413,61 +410,65 @@
 //                                return value==='wm5920';
 //                            }
 //                        }
-                    }
-                },
-
-                agreementMoney:{
-                   message:'无效的输入',
-                    validators:{
-                       notEmpty:{
-                           message:'金额不能为空'
-                       },
-                        regexp: {
-                            regexp: /^(([1-9]+)|([0-9]+\.[0-9]{1,2}))$/,
-                            message: '必须是金额,例如：2000.12。'
                         }
+                    },
 
+                    agreementMoney:{
+                        message:'无效的输入',
+                        validators:{
+                            notEmpty:{
+                                message:'金额不能为空'
+                            },
+                            regexp: {
+                                regexp: /^(([1-9]+)|([0-9]+\.[0-9]{1,2}))$/,
+                                message: '必须是金额,例如：2000.12。'
+                            }
+
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        $('.form_datetime').datetimepicker({
-            format:'yyyy-mm-dd hh:ii',
-            language:  'zh-TW',
-            weekStart: 1,
-            todayBtn:  1,
-            autoclose: 1,
-            todayHighlight: 1,
-            startView: 2,
-            forceParse: 0
+            $('.form_datetime').datetimepicker({
+                format:'yyyy-mm-dd hh:ii',
+                language:  'zh-TW',
+                weekStart: 1,
+                todayBtn:  1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                forceParse: 0
 //        showMeridian: 1
+            });
+            $('.form_date').datetimepicker({
+                format:'yyyy-mm-dd',
+                language:  'zh-TW',
+                weekStart: 1,
+                todayBtn:  1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                minView: 2,
+                forceParse: 0
+            });
+            $('.form_time').datetimepicker({
+                format:'hh:ii',
+                language:  'zh-TW',
+                weekStart: 1,
+                todayBtn:  1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 1,
+                minView: 0,
+                maxView: 1,
+                forceParse: 0
+            });
         });
-        $('.form_date').datetimepicker({
-            format:'yyyy-mm-dd',
-            language:  'zh-TW',
-            weekStart: 1,
-            todayBtn:  1,
-            autoclose: 1,
-            todayHighlight: 1,
-            startView: 2,
-            minView: 2,
-            forceParse: 0
-        });
-        $('.form_time').datetimepicker({
-            format:'hh:ii',
-            language:  'zh-TW',
-            weekStart: 1,
-            todayBtn:  1,
-            autoclose: 1,
-            todayHighlight: 1,
-            startView: 1,
-            minView: 0,
-            maxView: 1,
-            forceParse: 0
-        });
-    });
-</script>
+    </script>
+</div>
 
+
+<script src="../../static/js/jquery-3.3.1.min.js" th:src="@{/js/jquery-3.3.1.min.js}"></script>
+<script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
 </body>
 </html>

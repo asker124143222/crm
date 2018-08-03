@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @Author: xu.dm
@@ -39,27 +40,32 @@ public class CustomerController {
     @Resource
     private FamilyService familyService;
 
+    private int pageSize = 10;
+
+    private String ALL_DATA = "所有";
 //    @RequestMapping("/")
 //    public String index() {
 //        return "redirect:/list";
 //    }
 
-    @RequestMapping("/list/{pageNo}")
-    public ModelAndView list(@PathVariable("pageNo")Integer pageNo) {
+    @RequestMapping("/list/{pageNo}/{msg}")
+    public ModelAndView list(@PathVariable("pageNo")Integer pageNo, @PathVariable("msg") String customerName) {
         ModelAndView mav = new ModelAndView();
-        Sort sort = new Sort(Sort.Direction.ASC, "customerId");
+        Sort sort = new Sort(Sort.Direction.DESC, "customerId");
 //        List<Customer> customers = customerService.findAll(sort);
         if(pageNo==null || pageNo < 1 )
             pageNo = 1;
         int page = pageNo;
-        int size = 10;
 
-        Pageable pageable = PageRequest.of(page-1,size,sort);
-        Page<Customer> customerPage = customerService.findAllByPage(pageable);
-//        customerPage.getNumberOfElements()
+        Pageable pageable = PageRequest.of(page-1,pageSize,sort);
+//        Page<Customer> customerPage = customerService.findAllByPage(pageable);
+        if(customerName==null || customerName.equals(ALL_DATA)) customerName="";
+        Page<Customer> customerPage = customerService.findByCustomerNameContains(customerName,pageable);
         pageNo = customerPage.getNumber()+1;
         mav.addObject("customerPage", customerPage);
         mav.addObject("pageIndex",pageNo);
+        if(customerName.isEmpty()) customerName = ALL_DATA;
+        mav.addObject("customerName",customerName);
         mav.setViewName("customer/list");
         return mav;
     }
@@ -123,13 +129,16 @@ public class CustomerController {
         ModelAndView mav = new ModelAndView();
 //        List<Customer> customers = customerService.findByCustomerNameContains(customerName);
 //        mav.addObject("customers", customers);
-        Sort sort = new Sort(Sort.Direction.ASC, "customerId");
+        Sort sort = new Sort(Sort.Direction.DESC, "customerId");
         int page = 0;
-        int size = 10;
 
-        Pageable pageable = PageRequest.of(page,size,sort);
+        if(customerName==null || customerName.equals(ALL_DATA)) customerName="";
+        Pageable pageable = PageRequest.of(page,pageSize,sort);
         Page<Customer> customerPage = customerService.findByCustomerNameContains(customerName,pageable);
         mav.addObject("customerPage",customerPage);
+        mav.addObject("pageIndex",1);
+        if(customerName.isEmpty()) customerName = ALL_DATA;
+        mav.addObject("customerName",customerName);
         mav.setViewName("customer/list");
         return mav;
     }

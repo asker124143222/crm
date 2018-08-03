@@ -1,28 +1,25 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="~{index}"
 >
 
-<head th:replace="base::common_header(~{::title},~{::link})">
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"></link>
+<head>
+    <!--<meta charset="UTF-8">-->
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+    <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <!--<link rel="stylesheet" href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}"></link>-->
 
-    <!--jquery要放在前面-->
-    <script src="../../static/js/jquery-3.3.1.min.js" th:src="@{/js/jquery-3.3.1.min.js}"></script>
-    <script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
 
-    <title>list</title>
+
+    <title>客户列表</title>
 </head>
 
 
 <body>
-<div class="" th:replace="navTitle::navTitle">
 
-</div>
-
-<div class="container" th:fragment="list">
+<div class="container" layout:fragment="content">
     <!--<div class="container form-group">-->
         <!--<div class="col-sm-2 control-label">-->
             <!--<a href="/customer/add" th:href="@{/customer/add}" class="btn btn-info">add</a>-->
@@ -57,23 +54,26 @@
         </tbody>
     </table>
     <div class="container text-right">
-        <ul class="pagination" >
-            <li th:class="${pageIndex==1}?'disabled' : ''" th:if="${pageIndex-1 >=1}"><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex-1})}">上一页</a></li>
-            <li th:if="${pageIndex-3 >=1}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex-3})}" th:text="${pageIndex -3}" >1</a></li>
-            <li th:if="${pageIndex-2 >=1}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex-2})}" th:text="${pageIndex -2}" >1</a></li>
-            <li th:if="${pageIndex-1 >=1}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex-1})}" th:text="${pageIndex -1}" >1</a></li>
-            <li class="active"><a href="#" th:text="${pageIndex}" >1</a></li>
-            <li th:if="${pageIndex+1 <=customerPage.getTotalPages()}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex+1})}" th:text="${pageIndex +1}" >1</a></li>
-            <li th:if="${pageIndex+2 <=customerPage.getTotalPages()}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex+2})}" th:text="${pageIndex +2}" >1</a></li>
-            <li th:if="${pageIndex+3 <=customerPage.getTotalPages()}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex+3})}" th:text="${pageIndex +3}" >1</a></li>
 
-            <li th:class="${pageIndex==customerPage.getTotalPages()}?'disabled' : ''" th:if="${pageIndex+1 <=customerPage.getTotalPages()}" ><a th:href="@{/customer/list/{pageNo}(pageNo=${pageIndex+1})}">下一页</a></li>
+        <input type="hidden" name="customerName" th:value="${customerName}">
+        <ul class="pagination" >
+            <li th:class="${pageIndex==1}?'disabled' : ''" th:if="${pageIndex-1 >=1}"><a th:href="@{/customer/list/{pageNo}/{msg}(msg=${customerName},pageNo=${pageIndex-1})}">上一页</a></li>
+            <li th:if="${pageIndex-3 >=1}" ><a th:href="@{/customer/list/{pageNo}/{msg}(msg=${customerName},pageNo=${pageIndex-3})}" th:text="${pageIndex -3}" >1</a></li>
+            <li th:if="${pageIndex-2 >=1}" ><a th:href="@{/customer/list/{pageNo}/{msg}(msg=${customerName},pageNo=${pageIndex-2})}" th:text="${pageIndex -2}" >1</a></li>
+            <li th:if="${pageIndex-1 >=1}" ><a th:href="@{/customer/list/{pageNo}/{msg}(msg=${customerName},pageNo=${pageIndex-1})}" th:text="${pageIndex -1}" >1</a></li>
+            <li class="active"><a href="#" th:text="${pageIndex}" >1</a></li>
+            <li th:if="${pageIndex+1 <=customerPage.getTotalPages()}" ><a th:href="@{/customer/list/{pageNo}/{msg}(msg=${customerName},pageNo=${pageIndex+1})}" th:text="${pageIndex +1}" >1</a></li>
+            <li th:if="${pageIndex+2 <=customerPage.getTotalPages()}" ><a th:href="@{/customer/list/{pageNo}/{msg}(msg=${customerName},pageNo=${pageIndex+2})}" th:text="${pageIndex +2}" >1</a></li>
+            <li th:if="${pageIndex+3 <=customerPage.getTotalPages()}" ><a th:href="@{/customer/list/{pageNo}/{msg}(msg=${customerName},pageNo=${pageIndex+3})}" th:text="${pageIndex +3}" >1</a></li>
+
+            <li th:class="${pageIndex==customerPage.getTotalPages()}?'disabled' : ''" th:if="${pageIndex+1 <=customerPage.getTotalPages()}" ><a th:href="@{/customer/list/{pageNo}/{msg}(msg=${customerName},pageNo=${pageIndex+1})}">下一页</a></li>
         </ul>
     </div>
 
     <br>
 </div>
-
-
+<script src="../../static/js/jquery-3.3.1.min.js" th:src="@{/js/jquery-3.3.1.min.js}"></script>
+<script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
 </body>
+
 </html>

@@ -9,6 +9,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 
@@ -31,7 +32,7 @@ public class LogAspect {
     @Before("log()")
     public void doBefore(JoinPoint joinPoint)
     {
-        logger.info("方法执行前...");
+        logger.info(LocalDateTime.now().toString()+" 方法执行前");
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request =  sra.getRequest();
         logger.info("url:{}",request.getRequestURI());
@@ -44,7 +45,11 @@ public class LogAspect {
     @After("log()")
     public void doAfter(JoinPoint joinPoint)
     {
-        logger.info("方法执行后...");
+        String msg = "class："+joinPoint.getTarget().getClass().getName()
+                +" method: "+joinPoint.getSignature().getName()+" args: "+Arrays.toString(joinPoint.getArgs());
+
+        logger.info(LocalDateTime.now().toString()+" 方法执行完成");
+        logger.info(msg);
     }
 
     @AfterReturning(pointcut = "log()",returning = "result")
@@ -52,4 +57,5 @@ public class LogAspect {
     {
         logger.info("方法返回hashcode：{}",result.hashCode());
     }
+
 }

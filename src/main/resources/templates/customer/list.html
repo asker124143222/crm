@@ -53,10 +53,12 @@
         </tr>
         </tbody>
     </table>
-    <div class="container text-right">
 
+    <div class="text-right">
         <input type="hidden" name="customerName" th:value="${customerName}">
         <ul class="pagination" >
+            <li class="text-center"><a th:text="'共计'+${customerPage.getTotalPages()}+'页'"></a></li>
+
             <li th:class="${pageIndex==1}?'disabled' : ''" th:if="${pageIndex-1 >=1}"><a th:href="@{/customer/list/{pageNo}/{msg}(msg=${customerName},pageNo=${pageIndex-1})}">上一页</a></li>
             <li th:if="${pageIndex-3 >=1}" ><a th:href="@{/customer/list/{pageNo}/{msg}(msg=${customerName},pageNo=${pageIndex-3})}" th:text="${pageIndex -3}" >1</a></li>
             <li th:if="${pageIndex-2 >=1}" ><a th:href="@{/customer/list/{pageNo}/{msg}(msg=${customerName},pageNo=${pageIndex-2})}" th:text="${pageIndex -2}" >1</a></li>

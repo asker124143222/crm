@@ -42,13 +42,13 @@ public class CustomerController {
 
     private int pageSize = 10;
 
-    private String ALL_DATA = "所有";
+    private String ALL_DATA = "ALL";
 //    @RequestMapping("/")
 //    public String index() {
 //        return "redirect:/list";
 //    }
 
-    @RequestMapping("/list/{pageNo}/{msg}")
+    @RequestMapping(value = "/list/{pageNo}/{msg}",method = RequestMethod.GET)
     public ModelAndView list(@PathVariable("pageNo")Integer pageNo, @PathVariable("msg") String customerName) {
         ModelAndView mav = new ModelAndView();
         Sort sort = new Sort(Sort.Direction.DESC, "customerId");
@@ -96,7 +96,7 @@ public class CustomerController {
         familyService.save(family);
 
         //还需要改进，列出最近更新的
-        return "redirect:/customer/list/1";
+        return "redirect:/customer/list/1/"+this.ALL_DATA;
     }
 
     @RequestMapping(value = "/toEdit/{id}/{pageNo}")
@@ -121,7 +121,7 @@ public class CustomerController {
         customerService.delete(id);
         babyService.deleteByCustomerId(id);
         familyService.deleteByCustomerId(id);
-        return "redirect:/customer/list/1";
+        return "redirect:/customer/list/1/"+this.ALL_DATA;
     }
 
     @RequestMapping("/query")

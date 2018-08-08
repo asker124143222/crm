@@ -3,6 +3,7 @@ package com.home.crm.entity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * @Author: xu.dm
@@ -15,17 +16,24 @@ public class User {
     @Id
     @GenericGenerator(name="generator",strategy = "native")
     @GeneratedValue(generator = "generator")
-    private Long userId;
+    private Integer userId;
     @Column(nullable = false, unique = true)
-    private String userName;
+    private String userName; //登录用户名
+    @Column(nullable = false, unique = true)
+    private String name;//名称（昵称或者真实姓名，不同系统不同定义）
     @Column(nullable = false)
     private String password;
+    private String salt;//加密密码的盐
+    private byte state;//用户状态,0:创建未认证（比如没有激活，没有输入验证码等等）--等待验证的用户 , 1:正常状态,2：用户被锁定.
+    @ManyToMany(fetch= FetchType.EAGER)//立即从数据库中进行加载数据;
+    @JoinTable(name = "SysUserRole", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns ={@JoinColumn(name = "roleId") })
+    private List<SysRole> roleList;// 一个用户具有多个角色
 
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -37,6 +45,14 @@ public class User {
         this.userName = userName;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -44,4 +60,37 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
+    public byte getState() {
+        return state;
+    }
+
+    public void setState(byte state) {
+        this.state = state;
+    }
+
+    public List<SysRole> getRoleList() {
+        return roleList;
+    }
+
+    public void setRoleList(List<SysRole> roleList) {
+        this.roleList = roleList;
+    }
+
+    /**
+     * 密码盐.
+     * @return
+     */
+    public String getCredentialsSalt(){
+        return this.userName+this.salt;
+    }
+    //重新对盐重新进行了定义，用户名+salt，这样就更加不容易被破解
 }

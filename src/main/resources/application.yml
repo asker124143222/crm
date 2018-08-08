@@ -20,9 +20,6 @@ spring:
 
   thymeleaf:
     cache: false
-    template:
-      cache: false
-
 
   messages:
     basename: myconfig

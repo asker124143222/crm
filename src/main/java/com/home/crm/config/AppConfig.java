@@ -1,4 +1,4 @@
-package com.home.crm;
+package com.home.crm.config;
 
 import org.springframework.context.annotation.Configuration;
 

@@ -1,8 +1,11 @@
 package com.home.crm.entity;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -19,7 +22,7 @@ public class User {
     private Integer userId;
     @Column(nullable = false, unique = true)
     private String userName; //登录用户名
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;//名称（昵称或者真实姓名，不同系统不同定义）
     @Column(nullable = false)
     private String password;
@@ -28,6 +31,35 @@ public class User {
     @ManyToMany(fetch= FetchType.EAGER)//立即从数据库中进行加载数据;
     @JoinTable(name = "SysUserRole", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns ={@JoinColumn(name = "roleId") })
     private List<SysRole> roleList;// 一个用户具有多个角色
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime createTime;//创建时间
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate expiredDate;//过期日期
+    private String email;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
+
+    public LocalDate getExpiredDate() {
+        return expiredDate;
+    }
+
+    public void setExpiredDate(LocalDate expiredDate) {
+        this.expiredDate = expiredDate;
+    }
 
     public Integer getUserId() {
         return userId;

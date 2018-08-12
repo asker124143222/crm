@@ -6,6 +6,7 @@ import com.home.crm.entity.Family;
 import com.home.crm.service.BabyService;
 import com.home.crm.service.CustomerService;
 import com.home.crm.service.FamilyService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,7 +49,9 @@ public class CustomerController {
 //        return "redirect:/list";
 //    }
 
+
     @RequestMapping(value = "/list/{pageNo}/{msg}",method = RequestMethod.GET)
+    @RequiresPermissions("customer:view")
     public ModelAndView list(@PathVariable("pageNo")Integer pageNo, @PathVariable("msg") String customerName) {
         ModelAndView mav = new ModelAndView();
         Sort sort = new Sort(Sort.Direction.DESC, "customerId");
@@ -72,12 +75,14 @@ public class CustomerController {
 
 
     @RequestMapping(value="/add", method= RequestMethod.GET)
+    @RequiresPermissions("customer:add")
     public String toAdd(Customer customer, Baby baby, Family family) {
         return "customer/add";
     }
 
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping(value="/add",method = RequestMethod.POST)
+    @RequiresPermissions("customer:add")
     public String save(@Valid Customer customer, BindingResult result1,
                        @Valid Baby baby, BindingResult result2,
                        @Valid Family family, BindingResult result3)
@@ -100,6 +105,7 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/toEdit/{id}/{pageNo}")
+    @RequiresPermissions("customer:add")
     public ModelAndView edit(@PathVariable("id")Long id,@PathVariable("pageNo")Long pageNo)
     {
         ModelAndView mav = new ModelAndView();
@@ -115,6 +121,7 @@ public class CustomerController {
 
     @Transactional(rollbackFor = Exception.class)
     @RequestMapping("/delete/{id}")
+    @RequiresPermissions("customer:del")
     public String delete(@PathVariable("id") Long id)
     {
         //id = 3L;
@@ -125,6 +132,7 @@ public class CustomerController {
     }
 
     @RequestMapping("/query")
+    @RequiresPermissions("customer:view")
     public ModelAndView query(String customerName) {
         ModelAndView mav = new ModelAndView();
 //        List<Customer> customers = customerService.findByCustomerNameContains(customerName);

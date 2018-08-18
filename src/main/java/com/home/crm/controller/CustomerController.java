@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +22,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.net.URLEncoder;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+
 
 /**
  * @Author: xu.dm
@@ -76,7 +79,9 @@ public class CustomerController {
 
     @RequestMapping(value="/add", method= RequestMethod.GET)
     @RequiresPermissions("customer:add")
-    public String toAdd(Customer customer, Baby baby, Family family) {
+    public String toAdd(Customer customer, Baby baby, Family family, Map<String,Object> map) {
+        map.put("pageIndex",1);
+        map.put("msg",this.ALL_DATA);
         return "customer/add";
     }
 
@@ -85,7 +90,8 @@ public class CustomerController {
     @RequiresPermissions("customer:add")
     public String save(@Valid Customer customer, BindingResult result1,
                        @Valid Baby baby, BindingResult result2,
-                       @Valid Family family, BindingResult result3)
+                       @Valid Family family, BindingResult result3,
+                       Model Model) throws Exception
     {
         if(result1.hasErrors() || result2.hasErrors() || result3.hasErrors())
         {
@@ -100,8 +106,10 @@ public class CustomerController {
         babyService.save(baby);
         familyService.save(family);
 
-        //还需要改进，列出最近更新的
-        return "redirect:/customer/list/1/"+this.ALL_DATA;
+
+        //重定向url中带中文需要重新对中文进行utf-8编码
+        return "redirect:/customer/list/1/"+URLEncoder.encode(customer.getCustomerName(),"UTF-8");
+
     }
 
     @RequestMapping(value = "/toEdit/{id}/{pageNo}")

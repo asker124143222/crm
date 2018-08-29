@@ -24,6 +24,7 @@ public class SysPermission {
     private String permission; //权限字符串,menu例子：role:*，button例子：role:create,role:update,role:delete,role:view
     private Long parentId; //父编号
     private String parentIds; //父编号列表
+    private Integer level;//菜单层级，1（顶级）,2,3
     private Boolean available = Boolean.FALSE;
     //角色 -- 权限关系：多对多关系;
     @ManyToMany

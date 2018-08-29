@@ -1,8 +1,11 @@
 package com.home.crm.entity;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -19,7 +22,11 @@ public class SysRole {
     @Column(nullable = false, unique = true)
     private String role; // 角色标识程序中判断使用,如"admin",这个是唯一的:
     private String description; // 角色描述,UI界面显示使用
-    private Boolean available = Boolean.FALSE; // 是否可用,如果不可用将不会添加给用户
+    private Boolean available = Boolean.FALSE; // 是否可用,如果不可用将不会添加给用户，
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime createTime;//创建时间
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate expiredDate;//过期日期
 
     //角色 -- 权限关系：多对多关系;
     @ManyToMany(fetch= FetchType.EAGER)
@@ -30,6 +37,23 @@ public class SysRole {
     @ManyToMany
     @JoinTable(name="SysUserRole",joinColumns={@JoinColumn(name="roleId")},inverseJoinColumns={@JoinColumn(name="userId")})
     private List<User> users;// 一个角色对应多个用户
+
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
+
+    public LocalDate getExpiredDate() {
+        return expiredDate;
+    }
+
+    public void setExpiredDate(LocalDate expiredDate) {
+        this.expiredDate = expiredDate;
+    }
 
     public Integer getRoleId() {
         return roleId;

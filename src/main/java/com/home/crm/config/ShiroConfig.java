@@ -91,7 +91,7 @@ public class ShiroConfig {
 	createSimpleMappingExceptionResolver() {
 		SimpleMappingExceptionResolver r = new SimpleMappingExceptionResolver();
 		Properties mappings = new Properties();
-		mappings.setProperty("DatabaseException", "databaseError");//数据库异常处理
+//		mappings.setProperty("DatabaseException", "databaseError");//数据库异常处理
 		mappings.setProperty("UnauthorizedException","/user/403");
 		r.setExceptionMappings(mappings);  // None by default
 //		r.setDefaultErrorView("error");    // No default

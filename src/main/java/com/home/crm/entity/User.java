@@ -21,9 +21,9 @@ public class User {
     @GeneratedValue(generator = "generator")
     private Integer userId;
     @Column(nullable = false, unique = true)
-    private String userName; //登录用户名
+    private String userName; //登录用户名，账号
     @Column(nullable = false)
-    private String name;//名称（昵称或者真实姓名，不同系统不同定义）
+    private String name;//名称（昵称或者真实姓名，根据实际情况定义）
     @Column(nullable = false)
     private String password;
     private String salt;//加密密码的盐
@@ -36,6 +36,15 @@ public class User {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate expiredDate;//过期日期
     private String email;
+    private String tel;
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
 
     public String getEmail() {
         return email;

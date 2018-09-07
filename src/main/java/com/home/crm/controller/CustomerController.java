@@ -54,7 +54,7 @@ public class CustomerController {
 
 
     @RequestMapping(value = "/list/{pageNo}/{msg}",method = RequestMethod.GET)
-    @RequiresPermissions("customer:view")
+//    @RequiresPermissions("customer:view")
     public ModelAndView list(@PathVariable("pageNo")Integer pageNo, @PathVariable("msg") String customerName) {
         ModelAndView mav = new ModelAndView();
         Sort sort = new Sort(Sort.Direction.DESC, "customerId");
@@ -78,11 +78,11 @@ public class CustomerController {
 
 
     @RequestMapping(value="/add", method= RequestMethod.GET)
-    @RequiresPermissions("customer:add")
+//    @RequiresPermissions("customer:add")
     public String toAdd(Customer customer, Baby baby, Family family, Map<String,Object> map) {
         map.put("pageIndex",1);
         map.put("msg",this.ALL_DATA);
-        return "customer/add";
+        return "/customer/add";
     }
 
     @Transactional(rollbackFor = Exception.class)

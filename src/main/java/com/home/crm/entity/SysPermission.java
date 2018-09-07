@@ -18,6 +18,7 @@ public class SysPermission {
     private Integer permissionId;//主键.
     @Column(nullable = false)
     private String permissionName;//名称.
+    private String description;//描述
     @Column(columnDefinition="enum('menu','button')")
     private String resourceType;//资源类型，[menu|button]
     private String url;//资源路径.
@@ -30,6 +31,22 @@ public class SysPermission {
     @ManyToMany
     @JoinTable(name="SysRolePermission",joinColumns={@JoinColumn(name="permissionId")},inverseJoinColumns={@JoinColumn(name="roleId")})
     private List<SysRole> roles;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
 
     public Integer getPermissionId() {
         return permissionId;

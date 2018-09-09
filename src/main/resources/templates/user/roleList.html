@@ -10,15 +10,18 @@
     <!--<link rel="stylesheet" href="../css/bootstrap.css" th:href="@{/css/bootstrap.min.css}">-->
 
     <!--<link href="../css/bootstrap-table.css" rel="stylesheet">-->
-    <!--<link href="../css/jquery.treegrid.css" rel="stylesheet">-->
-    <!--<link rel="stylesheet" href="../css/myCommon.css">-->
 
+    <!--<link href="../css/jquery.treegrid.css" rel="stylesheet">-->
+
+    <!--<link rel="stylesheet" href="../css/myCommon.css">-->
 
     <!--<script src="../js/jquery-3.3.1.min.js" th:src="@{/js/jquery-3.3.1.min.js}"></script>-->
     <!--<script src="../js/bootstrap.js" th:src="@{/js/bootstrap.min.js}"></script>-->
 
     <!--<script type="text/javascript" src="../js/bootstrap-table.js"></script>-->
     <!--<script type="text/javascript" src="../js/bootstrap-table-zh-CN.js"></script>-->
+    <!--<script type="text/javascript" src="../js/bootstrap-table-export.js"></script>-->
+
     <!--<script type="text/javascript" src="../js/bootstrap-table-treegrid.js"></script>-->
     <!--<script type="text/javascript" src="../js/jquery.treegrid.min.js"></script>-->
 
@@ -58,6 +61,9 @@
         <button id="btn_detail" type="button" class="btn btn-default">
             <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>详情
         </button>
+        <button id="btn_authority" type="button" class="btn btn-default">
+            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>权限
+        </button>
     </div>
     <table id="roleTable">
 
@@ -71,8 +77,8 @@
     $(function () {
         $table.bootstrapTable({
             url: /*[[@{user/role}]]*/ null,        //请求后台的URL（*）
-            method: 'get',                      //请求方式（*）
-//            contentType : "application/x-www-form-urlencoded;charset=UTF-8",
+            method: 'post',                      //请求方式（*）
+            contentType : "application/x-www-form-urlencoded;charset=UTF-8", //post方式必须设置,get方式设置application/json
             dataType: 'json',
             striped: true,                      //是否显示行间隔色
             toolbar: '#toolbar',                //工具按钮用哪个容器
@@ -82,7 +88,7 @@
             pageNumber: 1,                      //初始化加载第一页，默认第一页
             pageSize: 5,                        //每页的记录行数（*）
             pageList: [5, 10, 25, 50],          //可供选择的每页的行数（*）
-            search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+//            search: true,                       //是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
             showColumns: true,                  //是否显示所有的列（选择显示的列）
             minimumCountColumns: 2,             //最少允许的列数
             showRefresh: true,                  //是否显示刷新按钮
@@ -94,10 +100,32 @@
             cardView: false,                    //是否显示详细视图
             detailView: false,                  //是否显示父子表
             idField: 'roleId',
+            showExport: true,                     //是否显示导出
+            exportDataType: "selected",              //basic', 'all', 'selected'.
+            exportTypes: [txt,'csv', 'excel','xlsx'],
+            exportOptions:{
+                //ignoreColumn: [0,0],            //忽略某一列的索引
+                fileName: '数据导出',              //文件名称设置
+                worksheetName: 'Sheet1',          //表格工作区名称
+                tableName: '数据导出表',
+                excelstyles: ['background-color', 'color', 'font-size', 'font-weight'],
+                //onMsoNumberFormat: DoOnMsoNumberFormat
+            },
+            buttonsAlign:"right",  //按钮位置
 
             columns: [
                 {
+                    field:'selected',
                     checkbox: true
+                }, {
+                    field:'rowNumber',
+                    title: '序号',
+                    align: 'center',
+                    halign: 'center',
+                    formatter: function (value, row, index) {
+                        var options = $table.bootstrapTable('getOptions');
+                        return options.pageSize * (options.pageNumber - 1) + index + 1;
+                    }
                 }, {
                     field: 'role',
                     title: '角色名称',

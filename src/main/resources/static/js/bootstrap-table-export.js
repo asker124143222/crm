@@ -15,8 +15,8 @@
         txt: 'TXT',
         sql: 'SQL',
         doc: 'MS-Word',
-        excel: 'MS-Excel',
-        xlsx: 'MS-Excel (OpenXML)',
+        excel: 'MS-Excel（2003）',
+        xlsx: 'MS-Excel (2007)',
         powerpoint: 'MS-Powerpoint',
         pdf: 'PDF'
     };

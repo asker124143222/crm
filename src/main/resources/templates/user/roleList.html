@@ -72,7 +72,6 @@
 
 
 <script th:inline="javascript">
-    var $btnQuery = $('#btnQuery');
     var $table = $("#roleTable");
     $(function () {
         $table.bootstrapTable({
@@ -222,9 +221,26 @@
             }
         });
 
-        $btnQuery.click(function () {
+        $('#btnQuery').click(function () {
             $table.bootstrapTable('refresh');
         });
+        
+        $('#btn_add').click(function () {
+            var url = /*[[@{user/roleAdd}]]*/ null;
+            var dataText=$.trim($(this).text())+"角色";
+            var $tabContainer = $('#container');
+            var $tabId = $tabContainer.data('tabs').find(dataText);
+            console.log("dataText:"+dataText);
+            if($tabId.length>0)
+            {
+                console.log("find:"+$tabId);
+                $tabContainer.data('tabs').showTab(dataText);
+            }
+            else {
+                console.log("no find");
+                $("#container").data("tabs").addTab({id:dataText, text: dataText, closeable: true, url: url});
+            }
+        })
 
     })
 </script>

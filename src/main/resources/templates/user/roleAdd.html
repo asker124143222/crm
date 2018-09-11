@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.w3.org/1999/xhtml"
+>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--<link rel="stylesheet" href="css/bootstrap.css">-->
+    <!--<link rel="stylesheet" href="css/bootstrapValidator.min.css">-->
+
+
+
+    <!--<script src="js/jquery-3.3.1.min.js"></script>-->
+    <!--<script src="js/bootstrap.js"></script>-->
+    <!--<script src="js/bootstrapValidator.min.js"></script>-->
+
+
+    <title>角色配置</title>
+
+
+</head>
+<body >
+<div class="container-fluid panel-body" style="padding-bottom:0px">
+    <form class="form-horizontal" id="formAdd" action="#" th:action="@{/user/roleAdd}" method="post">
+
+        <div class="panel panel-default" style="margin-bottom: 0px">
+            <h4 class="panel panel-heading h4font">
+                角色配置
+                <small>（*星号是必填项）</small>
+            </h4>
+
+            <div class="panel-body" id="customerPanel">
+                <div class="form-group">
+                    <label class="col-sm-1 control-label"><span style="color: red;font-weight: bold">＊</span>角色名</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" name="role" placeholder="角色名称" th:value="${sysRole.role}">
+                    </div>
+                    <label class="control-label">（输入类型是
+                        字母、数字、下划线或它们的组合，最长16位）</label>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">角色描述</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" name="description" placeholder="描述" th:value="${sysRole.description}">
+                    </div>
+                    <label class="control-label">（简单描述角色的使用范围和作用）</label>
+                </div>
+
+
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label"><span style="color: red;font-weight: bold">＊</span>状态</label>
+
+                    <div class="col-sm-11">
+
+                        <label class="radio-inline">
+                            <input type="radio"   name="available"  checked th:checked=${"sysRole.available"}>正常
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio"   name="available" th:checked=!${"sysRole.available"}>禁用
+                        </label>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">创建时间</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" disabled name="createTime" placeholder=""
+                               th:value="${#temporals.format(sysRole.createTime, 'yyyy-MM-dd HH:mm')}">
+                    </div>
+                    <label class="control-label">（系统自动生成）</label>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-1 control-label">有效期</label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" name="userName" placeholder="有效期" th:value="${sysRole.expiredDate}">
+                    </div>
+                    <label class="control-label">（置空表示永不过期）</label>
+                </div>
+
+
+            </div>
+        </div>
+
+        <br>
+        <div class="form-group">
+            <div class="col-sm-offset-5 col-sm-1">
+                <button type="submit" class="btn btn-primary">保 存</button>
+            </div>
+
+            <div class="col-sm-1">
+                <a name="backToRoleList" href="javascript:void(0)" th:href="@{/user/rlist}" class="btn btn-primary">返 回</a>
+            </div>
+        </div>
+
+
+
+    </form>
+</div>
+
+<script>
+    $(function () {
+
+
+        $('a[name="backToRoleList"]').click(function (e) {
+            e.preventDefault();
+            var url=$(this).attr('href');
+
+            var dataText='角色管理';
+            var $tabContainer = $('#container');
+            var $tabId = $tabContainer.data('tabs').find(dataText);
+
+            if($tabId.length>0)
+            {
+                $tabContainer.data('tabs').showTab(dataText);
+            }
+            else {
+                $tabContainer.data("tabs").addTab({id:dataText, text: dataText, closeable: true, url: url});
+            }
+        });
+    })
+</script>
+
+
+
+
+
+
+</body>
+</html>

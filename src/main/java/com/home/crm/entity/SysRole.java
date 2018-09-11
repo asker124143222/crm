@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +23,7 @@ public class SysRole {
     @GeneratedValue(generator = "generator")
     private Integer roleId; // 编号
     @Column(nullable = false, unique = true)
+    @NotBlank(message ="名称不能为空")
     private String role; // 角色标识程序中判断使用,如"admin",这个是唯一的:
     private String description; // 角色描述,UI界面显示使用
     private Boolean available = Boolean.FALSE; // 是否可用,如果不可用将不会添加给用户，

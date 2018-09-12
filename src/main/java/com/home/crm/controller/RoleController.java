@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -98,9 +100,19 @@ public class RoleController {
     @RequestMapping(value="/roleAdd", method= RequestMethod.GET)
 //    @RequiresPermissions("role:add")
     public String toAdd(SysRole sysRole) {
-        sysRole.setAvailable(true);
-        sysRole.setCreateTime(LocalDateTime.now());
+        sysRole.setAvailable(false);
         return "/user/roleAdd";
+    }
+
+    @RequestMapping(value="/roleAdd",method = RequestMethod.POST)
+    public String save(@Valid SysRole sysRole, BindingResult bindingResult)
+    {
+        if(bindingResult.hasErrors())
+        {
+            return "/user/roleAdd";
+        }
+        roleService.save(sysRole);
+        return "/user/roleList";
     }
 
 

@@ -21,7 +21,8 @@ public class SysRole {
     @Id
     @GenericGenerator(name="generator",strategy = "native")
     @GeneratedValue(generator = "generator")
-    private Integer roleId; // 编号
+    private Long roleId; // 编号
+
     @Column(nullable = false, unique = true)
     @NotBlank(message ="名称不能为空")
     private String role; // 角色标识程序中判断使用,如"admin",这个是唯一的:
@@ -64,11 +65,11 @@ public class SysRole {
         this.expiredDate = expiredDate;
     }
 
-    public Integer getRoleId() {
+    public Long getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Integer roleId) {
+    public void setRoleId(Long roleId) {
         this.roleId = roleId;
     }
 

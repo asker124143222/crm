@@ -24,7 +24,7 @@
 <body >
 <div class="container-fluid panel-body" style="padding-bottom:0px">
     <form class="form-horizontal" id="formAdd" action="#" th:action="@{/user/roleAdd}" method="post">
-
+        <input type="hidden" name="roleId" th:value="${sysRole.roleId}">
         <div class="panel panel-default" style="margin-bottom: 0px">
             <h4 class="panel panel-heading h4font">
                 角色配置
@@ -57,10 +57,10 @@
                     <div class="col-sm-11">
 
                         <label class="radio-inline">
-                            <input type="radio"   name="available"  checked th:checked=${"sysRole.available"}>正常
+                            <input type="radio" checked  name="available"  th:checked="${sysRole.available}">正常
                         </label>
                         <label class="radio-inline">
-                            <input type="radio"   name="available" th:checked=!${"sysRole.available"}>禁用
+                            <input type="radio"  name="available2" th:checked="${!sysRole.available}">禁用
                         </label>
                     </div>
                 </div>
@@ -69,7 +69,7 @@
                 <div class="form-group">
                     <label class="col-sm-1 control-label">创建时间</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" disabled name="createTime" placeholder=""
+                        <input type="text" disabled class="form-control" name="createTime" placeholder=""
                                th:value="${#temporals.format(sysRole.createTime, 'yyyy-MM-dd HH:mm')}">
                     </div>
                     <label class="control-label">（系统自动生成）</label>
@@ -78,7 +78,8 @@
                 <div class="form-group">
                     <label class="col-sm-1 control-label">有效期</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" name="userName" placeholder="有效期" th:value="${sysRole.expiredDate}">
+                        <input type="text" class="form-control" name="expiredDate" placeholder="有效期"
+                               th:value="${#temporals.format(sysRole.expiredDate, 'yyyy-MM-dd')}">
                     </div>
                     <label class="control-label">（置空表示永不过期）</label>
                 </div>
@@ -97,16 +98,11 @@
                 <a name="backToRoleList" href="javascript:void(0)" th:href="@{/user/rlist}" class="btn btn-primary">返 回</a>
             </div>
         </div>
-
-
-
     </form>
 </div>
 
 <script>
     $(function () {
-
-
         $('a[name="backToRoleList"]').click(function (e) {
             e.preventDefault();
             var url=$(this).attr('href');

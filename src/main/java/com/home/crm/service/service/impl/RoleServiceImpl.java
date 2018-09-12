@@ -34,4 +34,9 @@ public class RoleServiceImpl implements RoleService {
     public Page<SysRole> findAllByRoleContains(String role, Pageable pageable) {
         return roleRepository.findAllByRoleContains(role,pageable);
     }
+
+    @Override
+    public SysRole save(SysRole sysRole) {
+        return roleRepository.save(sysRole);
+    }
 }

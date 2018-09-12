@@ -17,4 +17,6 @@ public interface RoleService {
     Page<SysRole> findAllByRoleContains(String role, Pageable pageable);
 
     Optional<SysRole> findById(Integer roleId);
+
+    SysRole save(SysRole sysRole);
 }

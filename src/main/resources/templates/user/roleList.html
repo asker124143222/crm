@@ -72,7 +72,32 @@
 
 
 <script th:inline="javascript">
-    var $table = $("#roleTable");
+
+    function PrefixInteger(num, length) {
+        return (Array(length).join('0') + num).slice(-length);
+    }
+
+    function expiredDateFormat(cellval) {
+        var dateVal = cellval;
+        if (cellval != null) {
+            var currentDate = dateVal.year +"-"+PrefixInteger(dateVal.monthValue, 2) + "-"+ PrefixInteger(dateVal.dayOfMonth, 2);
+
+            return currentDate;
+        }
+    }
+
+    function createTimeFormat(cellval) {
+        var dateVal = cellval;
+        if (cellval != null) {
+            var currentDate = dateVal.year +"-"+PrefixInteger(dateVal.monthValue, 2) + "-"+ PrefixInteger(dateVal.dayOfMonth, 2)
+            +" "+PrefixInteger(dateVal.hour, 2)+":"+PrefixInteger(dateVal.minute, 2)+":"+PrefixInteger(dateVal.second, 2);
+
+            return currentDate;
+        }
+    }
+
+
+        var $table = $("#roleTable");
     $(function () {
         $table.bootstrapTable({
             url: /*[[@{user/role}]]*/ null,        //请求后台的URL（*）
@@ -143,11 +168,19 @@
                 }, {
                     field: 'createTime',
                     title: '创建时间',
-                    sortable: true
+                    sortable: true,
+                    formatter:function (value,row,index) {
+                        return  createTimeFormat(value);
+                    }
+
                 }, {
                     field: 'expiredDate',
                     title: '过期时间',
-                    sortable: true
+                    sortable: true,
+                    formatter:function (value,row,index) {
+                        return  expiredDateFormat(value);
+                    }
+
                 }, {
                     field: 'available',
                     title: '状态',
@@ -227,19 +260,20 @@
         
         $('#btn_add').click(function () {
             var url = /*[[@{user/roleAdd}]]*/ null;
-            var dataText=$.trim($(this).text())+"角色";
-            var $tabContainer = $('#container');
-            var $tabId = $tabContainer.data('tabs').find(dataText);
-            console.log("dataText:"+dataText);
-            if($tabId.length>0)
-            {
-                console.log("find:"+$tabId);
-                $tabContainer.data('tabs').showTab(dataText);
-            }
-            else {
-                console.log("no find");
-                $("#container").data("tabs").addTab({id:dataText, text: dataText, closeable: true, url: url});
-            }
+            $('#container').load(url);
+//            var dataText=$.trim($(this).text())+"角色";
+//            var $tabContainer = $('#container');
+//            var $tabId = $tabContainer.data('tabs').find(dataText);
+//            console.log("dataText:"+dataText);
+//            if($tabId.length>0)
+//            {
+//                console.log("find:"+$tabId);
+//                $tabContainer.data('tabs').showTab(dataText);
+//            }
+//            else {
+//                console.log("no find");
+//                $("#container").data("tabs").addTab({id:dataText, text: dataText, closeable: true, url: url});
+//            }
         })
 
     })

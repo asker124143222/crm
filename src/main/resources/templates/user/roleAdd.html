@@ -23,7 +23,8 @@
 </head>
 <body >
 <div class="container-fluid panel-body" style="padding-bottom:0px">
-    <form class="form-horizontal" id="formAdd" action="#" th:action="@{/user/roleAdd}" method="post">
+    <!--th:action="@{/user/roleAdd}"-->
+    <form class="form-horizontal" id="formAdd" action="#" th:action="@{/user/roleAdd}"  method="post">
         <input type="hidden" name="roleId" th:value="${sysRole.roleId}">
         <div class="panel panel-default" style="margin-bottom: 0px">
             <h4 class="panel panel-heading h4font">
@@ -102,23 +103,31 @@
 </div>
 
 <script>
+
     $(function () {
         $('a[name="backToRoleList"]').click(function (e) {
             e.preventDefault();
             var url=$(this).attr('href');
 
-            var dataText='角色管理';
-            var $tabContainer = $('#container');
-            var $tabId = $tabContainer.data('tabs').find(dataText);
+            $('#container').load(url);
 
-            if($tabId.length>0)
-            {
-                $tabContainer.data('tabs').showTab(dataText);
-            }
-            else {
-                $tabContainer.data("tabs").addTab({id:dataText, text: dataText, closeable: true, url: url});
-            }
+//            var dataText='角色管理';
+//            var $tabContainer = $('#container');
+//            var $tabId = $tabContainer.data('tabs').find(dataText);
+//
+//            if($tabId.length>0)
+//            {
+//                $tabContainer.data('tabs').showTab(dataText);
+//            }
+//            else {
+//                $tabContainer.data("tabs").addTab({id:dataText, text: dataText, closeable: true, url: url});
+//            }
         });
+        $('form[id="formAdd"]').ajaxForm(function (data) {
+            console.log(data);
+            if(data!=0)
+                $('#container').load(data);
+        })
     })
 </script>
 

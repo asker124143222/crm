@@ -105,14 +105,16 @@ public class RoleController {
     }
 
     @RequestMapping(value="/roleAdd",method = RequestMethod.POST)
+    @ResponseBody
     public String save(@Valid SysRole sysRole, BindingResult bindingResult)
     {
         if(bindingResult.hasErrors())
         {
-            return "/user/roleAdd";
+            return "0";
         }
+        sysRole.setCreateTime(LocalDateTime.now());
         roleService.save(sysRole);
-        return "/user/roleList";
+        return  "/user/rlist";
     }
 
 

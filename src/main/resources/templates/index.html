@@ -32,6 +32,7 @@
 
 
     <script src="../static/js/jquery-3.3.1.min.js" th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script src="../static/js/jquery.form.js" th:src="@{/js/jquery.form.js}"></script>
     <script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
     <script src="../static/js/adminlte.js" th:src="@{/js/adminlte.js}"></script>
 
@@ -471,21 +472,21 @@
             e.preventDefault();
             var url=$(this).attr('href');
             console.log(url);
-//            $('#container').load(url);
+            $('#container').load(url);
 
-            var dataText=$(this).text();
-            var $tabContainer = $('#container');
-            var $tabId = $tabContainer.data('tabs').find(dataText);
-
-            if($tabId.length>0)
-            {
-                console.log("find:"+$tabId);
-                $tabContainer.data('tabs').showTab(dataText);
-            }
-            else {
-                console.log("no find");
-                $tabContainer.data("tabs").addTab({id:dataText, text: dataText, closeable: true, url: url});
-            }
+//            var dataText=$(this).text();
+//            var $tabContainer = $('#container');
+//            var $tabId = $tabContainer.data('tabs').find(dataText);
+//
+//            if($tabId.length>0)
+//            {
+//                console.log("find:"+$tabId);
+//                $tabContainer.data('tabs').showTab(dataText);
+//            }
+//            else {
+//                console.log("no find");
+//                $tabContainer.data("tabs").addTab({id:dataText, text: dataText, closeable: true, url: url});
+//            }
         });
     })
 

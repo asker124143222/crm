@@ -11,10 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
@@ -24,6 +22,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -100,7 +99,7 @@ public class RoleController {
     @RequestMapping(value="/roleAdd", method= RequestMethod.GET)
 //    @RequiresPermissions("role:add")
     public String toAdd(SysRole sysRole) {
-        sysRole.setAvailable(false);
+//        sysRole.setAvailable(false);
         return "/user/roleAdd";
     }
 
@@ -112,10 +111,76 @@ public class RoleController {
         {
             return "0";
         }
-        sysRole.setCreateTime(LocalDateTime.now());
-        roleService.save(sysRole);
-        return  "/user/rlist";
+        if(sysRole.getCreateTime()==null)
+            sysRole.setCreateTime(LocalDateTime.now());
+        try {
+            roleService.save(sysRole);
+            return  "/user/rlist";
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return "0";
+        }
     }
 
 
+    @RequestMapping("/checkRoleExists")
+    @ResponseBody
+    public Object checkRoleExists(@RequestParam String newRole,@RequestParam(required = false) Integer roleId,@RequestParam(required = false) String oldRole)
+    {
+        Map<String,Boolean> map = new HashMap<>();
+        if(roleId==null)
+        {
+            boolean result = !roleService.checkRoleExists(newRole);
+            map.put("valid",result);
+        }
+        else
+        {
+            boolean result = !roleService.checkRoleExists(oldRole,newRole);
+            map.put("valid",result);
+        }
+        return map;
+    }
+
+
+    @RequestMapping(value = "/roleEdit/{id}")
+//    @RequiresPermissions("customer:add")
+    public String edit(@PathVariable("id")Integer id,Map<String,Object> map)
+    {
+        SysRole sysRole = roleService.findById(id).orElse(new SysRole());
+        map.put("sysRole",sysRole);
+        return "/user/roleAdd";
+    }
+    
+    @RequestMapping(value = "/roleDelete")
+    @ResponseBody
+    public Object delete(@RequestParam String roleIdList)
+    {
+        if(roleIdList==null || roleIdList.isEmpty())
+        {
+            return "0";
+        }
+        String[] sList = roleIdList.split(",");
+        List<Integer> idList = new ArrayList<>();
+        for (String s:sList )
+        {
+            if(s.equalsIgnoreCase("1"))
+                return "0";
+            idList.add(Integer.parseInt(s));
+
+        }
+        boolean result = roleService.deleteAllByRoleIdIn(idList);
+        Map<String,String> map = new HashMap<>();
+        if(result)
+        {
+            map.put("success","true");
+            map.put("url","/user/rlist");
+        }
+        else
+        {
+            map.put("error","true");
+        }
+
+        return map;
+    }
 }

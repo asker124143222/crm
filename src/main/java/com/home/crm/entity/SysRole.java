@@ -21,7 +21,7 @@ public class SysRole {
     @Id
     @GenericGenerator(name="generator",strategy = "native")
     @GeneratedValue(generator = "generator")
-    private Long roleId; // 编号
+    private Integer roleId; // 编号
 
     @Column(nullable = false, unique = true)
     @NotBlank(message ="名称不能为空")
@@ -65,11 +65,11 @@ public class SysRole {
         this.expiredDate = expiredDate;
     }
 
-    public Long getRoleId() {
+    public Integer getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(Long roleId) {
+    public void setRoleId(Integer roleId) {
         this.roleId = roleId;
     }
 

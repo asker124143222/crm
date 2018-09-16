@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -38,5 +39,35 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public SysRole save(SysRole sysRole) {
         return roleRepository.save(sysRole);
+    }
+
+    @Override
+    public boolean checkRoleExists(String role) {
+        SysRole sysRole = roleRepository.findSysRoleByRole(role);
+        if(sysRole!=null)
+            return true;
+        else
+            return false;
+    }
+
+    @Override
+    public boolean checkRoleExists(String oldRole, String newRole) {
+        SysRole sysRole = roleRepository.findSysRoleExists2(oldRole,newRole);
+        if(sysRole!=null)
+            return true;
+        else
+            return false;
+    }
+
+    @Override
+    public boolean deleteAllByRoleIdIn(List<Integer> roleIdList) {
+        try {
+            roleRepository.deleteAllByRoleIdList(roleIdList);
+            return true;
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

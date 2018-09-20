@@ -299,7 +299,7 @@
                 for (var i = 1; i < selectedLine.length; i++) {
                     idList += ','+ selectedLine[i].roleId;
                 }
-                console.log(idList);
+//                console.log(idList);
 
                 var deleteUrl = "/user/roleDelete";
                 $.ajax({
@@ -308,13 +308,13 @@
                     data:{roleIdList:idList},
                     dataType:"json",
                     success:function (result) {
-                        console.log(result);
+//                        console.log(result);
                         $('#container').load(result.url);
                         $('#deleteModal').modal('hide');//隐藏modal
                         $('.modal-backdrop').remove();//移除遮罩
                     },
                     error:function (result) {
-                        console.log(result);
+//                        console.log(result);
                       alert(result.responseText);
                     }
                 });

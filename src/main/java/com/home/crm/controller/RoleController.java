@@ -183,4 +183,33 @@ public class RoleController {
 
         return map;
     }
+
+    @RequestMapping("/plist")
+    public String permissionList()
+    {
+        return "/user/sysPermission";
+    }
+
+    @RequestMapping("/getPermission")
+    @ResponseBody
+    public Object getRolePermission(HttpServletRequest request,HttpServletResponse response, Map<String, Object> map)
+    {
+
+
+
+        ObjectMapper mapper=new ObjectMapper();
+        String jsonString="";
+        try {
+            jsonString=mapper.writeValueAsString(map);
+//            System.out.print(jsonString);
+        } catch (JsonGenerationException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return jsonString;
+    }
 }

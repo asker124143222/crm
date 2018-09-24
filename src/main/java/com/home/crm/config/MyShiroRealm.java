@@ -1,8 +1,9 @@
 package com.home.crm.config;
 
-import com.home.crm.entity.SysPermission;
-import com.home.crm.entity.SysRole;
+
 import com.home.crm.entity.User;
+import com.home.crm.model.ISysPermission;
+import com.home.crm.model.IUserRole;
 import com.home.crm.service.UserService;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -29,12 +30,20 @@ public class MyShiroRealm extends AuthorizingRealm {
         //也就是SimpleAuthenticationInfo构造的时候第一个参数传递需要User对象
         User user  = (User)principals.getPrimaryPrincipal();
 
-        for(SysRole role:user.getRoleList()){
+        for(IUserRole role:user.getRoleList())
+        {
             authorizationInfo.addRole(role.getRole());
-            for(SysPermission p:role.getPermissions()){
-                authorizationInfo.addStringPermission(p.getPermission());
-            }
         }
+        for(ISysPermission p:user.getPermissionList())
+        {
+            authorizationInfo.addStringPermission(p.getPermission());
+        }
+//        for(SysRole role:user.getRoleList()){
+//            authorizationInfo.addRole(role.getRole());
+//            for(SysPermission p:role.getPermissions()){
+//                authorizationInfo.addStringPermission(p.getPermission());
+//            }
+//        }
         return authorizationInfo;
     }
 
@@ -55,6 +64,8 @@ public class MyShiroRealm extends AuthorizingRealm {
         if(user == null){
             return null;
         }
+        user.setRoleList(userService.findUserRoleByUserName(user.getUserName()));
+        user.setPermissionList(userService.findUserRolePermissionByUserName(user.getUserName()));
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
                 user, //这里传入的是user对象，比对的是用户名，直接传入用户名也没错，但是在授权部分就需要自己重新从数据库里取权限
                 user.getPassword(), //密码

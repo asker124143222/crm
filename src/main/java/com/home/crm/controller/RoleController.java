@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.home.crm.entity.SysRole;
+import com.home.crm.model.ISysRolePermission;
 import com.home.crm.service.RoleService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +42,7 @@ public class RoleController {
     //,produces="application/json;charset=UTF-8"
     @RequestMapping(value="/role")
     @ResponseBody
+    @RequiresPermissions("role:view")
     public Object getRole(HttpServletRequest request,HttpServletResponse response, Map<String, Object> map)
     {
 
@@ -72,6 +75,8 @@ public class RoleController {
         map.put("total",sysRolePage.getTotalElements());
         map.put("rows",sysRolePage.getContent());
 
+//        return map;
+
         ObjectMapper mapper=new ObjectMapper();
         String jsonString="";
         try {
@@ -90,6 +95,7 @@ public class RoleController {
     }
 
     @RequestMapping("/rlist")
+//    @RequiresPermissions("user:view")
     public String list()
     {
         return "/user/roleList";
@@ -97,7 +103,7 @@ public class RoleController {
 
 
     @RequestMapping(value="/roleAdd", method= RequestMethod.GET)
-//    @RequiresPermissions("role:add")
+    @RequiresPermissions("role:add")
     public String toAdd(SysRole sysRole) {
 //        sysRole.setAvailable(false);
         return "/user/roleAdd";
@@ -105,6 +111,7 @@ public class RoleController {
 
     @RequestMapping(value="/roleAdd",method = RequestMethod.POST)
     @ResponseBody
+    @RequiresPermissions("role:add")
     public String save(@Valid SysRole sysRole, BindingResult bindingResult)
     {
         if(bindingResult.hasErrors())
@@ -144,7 +151,7 @@ public class RoleController {
 
 
     @RequestMapping(value = "/roleEdit/{id}")
-//    @RequiresPermissions("customer:add")
+    @RequiresPermissions("role:add")
     public String edit(@PathVariable("id")Integer id,Map<String,Object> map)
     {
         SysRole sysRole = roleService.findById(id).orElse(new SysRole());
@@ -154,6 +161,7 @@ public class RoleController {
     
     @RequestMapping(value = "/roleDelete")
     @ResponseBody
+    @RequiresPermissions("role:del")
     public Object delete(@RequestParam String roleIdList)
     {
         if(roleIdList==null || roleIdList.isEmpty())
@@ -184,23 +192,26 @@ public class RoleController {
         return map;
     }
 
-    @RequestMapping("/plist")
-    public String permissionList()
+    @RequestMapping(value = "/plist/{roleId}")
+    public String permissionList(@PathVariable("roleId")Integer roleId,Map<String, Object> map)
     {
+        SysRole sysRole = roleService.findById(roleId).orElse(new SysRole());
+        map.put("sysRole",sysRole);
         return "/user/sysPermission";
     }
 
-    @RequestMapping("/getPermission")
+    @RequestMapping("/getPermission/{roleId}")
     @ResponseBody
-    public Object getRolePermission(HttpServletRequest request,HttpServletResponse response, Map<String, Object> map)
+    public Object getRolePermission(@PathVariable("roleId")Integer roleId,Map<String, Object> map)
     {
+        if(roleId==null)
+            return null;
 
-
-
+        List<ISysRolePermission> list = roleService.findSysRolePermissionByRoleId(roleId);
         ObjectMapper mapper=new ObjectMapper();
         String jsonString="";
         try {
-            jsonString=mapper.writeValueAsString(map);
+            jsonString=mapper.writeValueAsString(list);
 //            System.out.print(jsonString);
         } catch (JsonGenerationException e) {
             e.printStackTrace();
@@ -211,5 +222,50 @@ public class RoleController {
         }
 
         return jsonString;
+    }
+
+    @RequestMapping(value = "/toAuthorize")
+    @ResponseBody
+//    @RequiresPermissions("role:authorize")
+    public Object toAuthorize(Integer roleId,String permissionIdList)
+    {
+        if(roleId==1) return 0;
+        Map<String,String> map = new HashMap<>();
+        if(permissionIdList==null || permissionIdList.isEmpty())
+        {
+            try {
+                roleService.clearAuthorization(roleId);
+                map.put("success","true");
+                map.put("url","/user/rlist");
+                return map;
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+                map.put("sucess","false");
+                map.put("url","/user/rlist");
+                return map;
+            }
+        }
+        String[] sList = permissionIdList.split(",");
+        List<Integer> idList = new ArrayList<>();
+        for (String s:sList )
+        {
+            idList.add(Integer.parseInt(s));
+        }
+
+        try {
+            roleService.grantAuthorization(roleId,idList);
+            map.put("sucess","true");
+            map.put("url","/user/rlist");
+
+            return map;
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            map.put("sucess","false");
+            map.put("url","/user/rlist");
+            return map;
+        }
+
     }
 }

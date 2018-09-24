@@ -28,8 +28,9 @@ public class SysPermission {
     private Integer level;//菜单层级，1（顶级）,2,3
     private Boolean available = Boolean.FALSE;
     //角色 -- 权限关系：多对多关系;
-    @ManyToMany
-    @JoinTable(name="SysRolePermission",joinColumns={@JoinColumn(name="permissionId")},inverseJoinColumns={@JoinColumn(name="roleId")})
+//    @ManyToMany
+//    @JoinTable(name="SysRolePermission",joinColumns={@JoinColumn(name="permissionId")},inverseJoinColumns={@JoinColumn(name="roleId")})
+    @Transient
     private List<SysRole> roles;
 
     public String getDescription() {

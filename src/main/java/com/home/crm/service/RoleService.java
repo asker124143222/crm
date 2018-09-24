@@ -1,6 +1,7 @@
 package com.home.crm.service;
 
 import com.home.crm.entity.SysRole;
+import com.home.crm.model.ISysRolePermission;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -26,4 +27,10 @@ public interface RoleService {
     boolean checkRoleExists(String oldRole,String newRole);
 
     boolean deleteAllByRoleIdIn(List<Integer> roleIdList);
+
+    List<ISysRolePermission> findSysRolePermissionByRoleId(Integer roleId);
+
+    void grantAuthorization(Integer roleId,List<Integer> permissionList);
+
+    void clearAuthorization(Integer roleId);
 }

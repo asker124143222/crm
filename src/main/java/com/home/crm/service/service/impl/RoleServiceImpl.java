@@ -1,6 +1,7 @@
 package com.home.crm.service.service.impl;
 
 import com.home.crm.entity.SysRole;
+import com.home.crm.model.ISysRolePermission;
 import com.home.crm.repository.RoleRepository;
 import com.home.crm.service.RoleService;
 import org.springframework.data.domain.Page;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,9 +61,14 @@ public class RoleServiceImpl implements RoleService {
             return false;
     }
 
+    @Transactional
     @Override
     public boolean deleteAllByRoleIdIn(List<Integer> roleIdList) {
         try {
+            for(Integer roleId:roleIdList)
+            {
+                roleRepository.deleteRolePermission(roleId);
+            }
             roleRepository.deleteAllByRoleIdList(roleIdList);
             return true;
         }catch (Exception e)
@@ -69,5 +76,26 @@ public class RoleServiceImpl implements RoleService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public List<ISysRolePermission> findSysRolePermissionByRoleId(Integer roleId) {
+        return roleRepository.findSysRolePermissionByRoleId(roleId);
+    }
+
+    @Transactional
+    @Override
+    public void grantAuthorization(Integer roleId, List<Integer> permissionList) {
+        roleRepository.deleteRolePermission(roleId);
+        for(Integer permissionId:permissionList)
+        {
+            roleRepository.insertRolePermission(roleId,permissionId);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void clearAuthorization(Integer roleId) {
+        roleRepository.deleteRolePermission(roleId);
     }
 }

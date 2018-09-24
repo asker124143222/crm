@@ -1,5 +1,7 @@
 package com.home.crm.entity;
 
+import com.home.crm.model.ISysPermission;
+import com.home.crm.model.IUserRole;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -28,15 +30,34 @@ public class User {
     private String password;
     private String salt;//加密密码的盐
     private byte state;//用户状态,0:创建未认证（比如没有激活，没有输入验证码等等）--等待验证的用户 , 1:正常状态,2：用户被锁定.
-    @ManyToMany(fetch= FetchType.EAGER)//立即从数据库中进行加载数据;
-    @JoinTable(name = "SysUserRole", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns ={@JoinColumn(name = "roleId") })
-    private List<SysRole> roleList;// 一个用户具有多个角色
+//    @ManyToMany(fetch= FetchType.EAGER)//立即从数据库中进行加载数据;
+//    @JoinTable(name = "SysUserRole", joinColumns = { @JoinColumn(name = "userId") }, inverseJoinColumns ={@JoinColumn(name = "roleId") })
+    @Transient
+    private List<IUserRole> roleList;// 一个用户具有多个角色
+    @Transient
+    private List<ISysPermission> permissionList;//用户的权限
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createTime;//创建时间
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate expiredDate;//过期日期
     private String email;
     private String tel;
+
+    public List<IUserRole> getRoleList() {
+        return roleList;
+    }
+
+    public void setRoleList(List<IUserRole> roleList) {
+        this.roleList = roleList;
+    }
+
+    public List<ISysPermission> getPermissionList() {
+        return permissionList;
+    }
+
+    public void setPermissionList(List<ISysPermission> permissionList) {
+        this.permissionList = permissionList;
+    }
 
     public String getTel() {
         return tel;
@@ -116,14 +137,6 @@ public class User {
 
     public void setState(byte state) {
         this.state = state;
-    }
-
-    public List<SysRole> getRoleList() {
-        return roleList;
-    }
-
-    public void setRoleList(List<SysRole> roleList) {
-        this.roleList = roleList;
     }
 
     /**

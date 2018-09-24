@@ -206,6 +206,7 @@
                     title: '状态',
                     sortable: true,
                     formatter:function (value,row,index) {
+                        if(row.role=='admin') return "锁定";
                         if(value) return "正常";
                         else return "禁用";
                     }
@@ -310,8 +311,8 @@
                     success:function (result) {
 //                        console.log(result);
                         $('#container').load(result.url);
-                        $('#deleteModal').modal('hide');//隐藏modal
                         $('.modal-backdrop').remove();//移除遮罩
+                        $("body").removeClass('modal-open'); //移除模态
                     },
                     error:function (result) {
 //                        console.log(result);
@@ -320,7 +321,20 @@
                 });
 
             }
-        })
+        });
+
+        $('#btn_authority').click(function () {
+            var selectedLine = $table.bootstrapTable('getSelections');
+            if (selectedLine.length < 1) {
+                alert("请选中一行数据");
+            }
+            else {
+                var idList = selectedLine[0].roleId;
+
+                var url = "/user/plist/"+idList;
+                $('#container').load(url);
+            }
+        });
     })
 </script>
 </body>

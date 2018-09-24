@@ -2,6 +2,7 @@ package com.home.crm.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.home.crm.model.ISysRolePermission;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -37,16 +38,17 @@ public class SysRole {
     private LocalDate expiredDate;//过期日期
 
     //角色 -- 权限关系：多对多关系;
-    @JsonIgnore
-    @ManyToMany(fetch= FetchType.EAGER)
-    @JoinTable(name="SysRolePermission",joinColumns={@JoinColumn(name="roleId")},inverseJoinColumns={@JoinColumn(name="permissionId")})
-    private List<SysPermission> permissions;
+//    @JsonIgnore
+//    @ManyToMany(fetch= FetchType.EAGER)
+//    @JoinTable(name="SysRolePermission",joinColumns={@JoinColumn(name="roleId")},inverseJoinColumns={@JoinColumn(name="permissionId")})
+    @Transient
+    private List<ISysRolePermission> permissions;
 
     // 用户 - 角色关系定义;
-    @JsonIgnore
-    @ManyToMany
-    @JoinTable(name="SysUserRole",joinColumns={@JoinColumn(name="roleId")},inverseJoinColumns={@JoinColumn(name="userId")})
-    private List<User> users;// 一个角色对应多个用户
+//    @JsonIgnore
+//    @ManyToMany
+//    @JoinTable(name="SysUserRole",joinColumns={@JoinColumn(name="roleId")},inverseJoinColumns={@JoinColumn(name="userId")})
+//    private List<User> users;// 一个角色对应多个用户
 
 
     public LocalDateTime getCreateTime() {
@@ -97,19 +99,12 @@ public class SysRole {
         this.available = available;
     }
 
-    public List<SysPermission> getPermissions() {
+    public List<ISysRolePermission> getPermissions() {
         return permissions;
     }
 
-    public void setPermissions(List<SysPermission> permissions) {
+    public void setPermissions(List<ISysRolePermission> permissions) {
         this.permissions = permissions;
     }
 
-    public List<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
 }

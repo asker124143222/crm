@@ -61,6 +61,7 @@ public class RoleServiceImpl implements RoleService {
             return false;
     }
 
+    //删除角色权限和角色
     @Transactional
     @Override
     public boolean deleteAllByRoleIdIn(List<Integer> roleIdList) {
@@ -83,6 +84,7 @@ public class RoleServiceImpl implements RoleService {
         return roleRepository.findSysRolePermissionByRoleId(roleId);
     }
 
+    //授权前先清除原角色权限，然后重新新增授权
     @Transactional
     @Override
     public void grantAuthorization(Integer roleId, List<Integer> permissionList) {

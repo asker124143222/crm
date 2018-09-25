@@ -46,7 +46,7 @@ public class RoleController {
     public Object getRole(HttpServletRequest request,HttpServletResponse response, Map<String, Object> map)
     {
 
-        int pageSize = 5;
+        int pageSize = 10;
         try {
             pageSize =  Integer.parseInt(request.getParameter("pageSize"));
         }catch (Exception e)

@@ -21,7 +21,7 @@ public class EncryptUtils {
 
     public String encrypt(String str)
     {
-        return new SimpleHash(algorithmName,str, ByteSource.Util.bytes(salt),hashIterations).toBase64();
+        return new SimpleHash(algorithmName,str, ByteSource.Util.bytes(salt),hashIterations).toString();
     }
 
     public String getSalt() {

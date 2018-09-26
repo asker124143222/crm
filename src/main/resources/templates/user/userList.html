@@ -213,8 +213,8 @@
                     sortable: true,
                     formatter:function (value,row,index) {
                         if(row.userName=='admin') return "锁定";
-                        if(value = 0) return "未认证";
-                        else if(value =1 ) return "正常";
+                        if(value == 0) return "未认证";
+                        else if(value ==1 ) return "正常";
                         else return "禁用";
                     }
                 }
@@ -262,13 +262,9 @@
                 alert("请选中一行数据");
             }
             else {
-                var idList = selectedLine[0].roleId;
-//                for (var i = 1; i < selectedLine.length; i++) {
-//                    idList += ',' + selectedLine[i].id;
-//                }
-                console.log(idList);
+                var idList = selectedLine[0].userId;
 
-                var url = "/user/roleEdit/"+idList;
+                var url = "/user/edit/"+idList;
                 $('#container').load(url);
 
             }
@@ -279,22 +275,8 @@
         });
 
         $('#btn_add').click(function () {
-//            var url = /*[[@{user/roleAdd}]]*/ null;
-            var url = "/user/roleAdd/";
+            var url = "/user/add";
             $('#container').load(url);
-//            var dataText=$.trim($(this).text())+"角色";
-//            var $tabContainer = $('#container');
-//            var $tabId = $tabContainer.data('tabs').find(dataText);
-//            console.log("dataText:"+dataText);
-//            if($tabId.length>0)
-//            {
-//                console.log("find:"+$tabId);
-//                $tabContainer.data('tabs').showTab(dataText);
-//            }
-//            else {
-//                console.log("no find");
-//                $("#container").data("tabs").addTab({id:dataText, text: dataText, closeable: true, url: url});
-//            }
         });
 
         $('#btn_delete').click(function () {

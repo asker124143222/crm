@@ -13,10 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +34,7 @@ import java.util.Map;
 public class UserController {
     private String algorithmName = "md5";
     private int hashIterations = 2;
+    private String salt = "8d78869f470951332959580424d4bf4f";
 
     @Resource
     UserService userService;
@@ -114,16 +112,24 @@ public class UserController {
     @RequestMapping(value = "/add",method = RequestMethod.POST)
     @RequiresPermissions("user:add")//权限管理;
     @ResponseBody
-    public String save(@Valid User user, BindingResult bindingResult){
+    public String save(@Valid User user, BindingResult bindingResult,String password2){
         if(bindingResult.hasErrors())
         {
             return "0";
         }
         if(user.getCreateTime()==null)
             user.setCreateTime(LocalDateTime.now());
-        if(user.getUserId()!=null) {
+        user.setSalt(this.salt);
+        if(user.getUserId()==null) {
             String encryptPwd = new EncryptUtils(user.getCredentialsSalt(), this.algorithmName, this.hashIterations).encrypt(user.getPassword());
             user.setPassword(encryptPwd);
+        }
+        else {
+            if(!user.getPassword().equals(password2))
+            {
+                String encryptPwd = new EncryptUtils(user.getCredentialsSalt(), this.algorithmName, this.hashIterations).encrypt(user.getPassword());
+                user.setPassword(encryptPwd);
+            }
         }
         try {
             userService.save(user);
@@ -152,6 +158,17 @@ public class UserController {
         }
         return map;
     }
+
+
+    @RequestMapping(value = "/edit/{id}")
+    @RequiresPermissions("user:add")
+    public String edit(@PathVariable("id")Integer id, Map<String,Object> map)
+    {
+        User user = userService.findUserById(id).orElse(new User());
+        map.put("user",user);
+        return "/user/userAdd";
+    }
+
     /**
      * 用户删除;
      * @return

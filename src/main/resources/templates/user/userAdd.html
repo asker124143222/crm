@@ -24,8 +24,9 @@
 
 
 <div class="container-fluid panel-body" style="padding-bottom:0px">
-    <form class="form-horizontal" id="formAdd" action="#" th:action="@{/user/add}" method="post">
-
+    <form class="form-horizontal validation-form" id="formAdd" action="#" th:action="@{/user/add}" method="post">
+        <input type="hidden" name="userId" th:value="${user.userId}">
+        <input type="hidden" name="password2" th:value="${user.password}">
         <div class="panel panel-default" style="margin-bottom: 0px">
             <h4 class="panel panel-heading h4font" >
                 用户配置<small>（＊星号是必填项）</small>
@@ -39,7 +40,7 @@
                                th:value="${user.userName}">
                     </div>
                     <label class="control-label">（输入类型是
-                        字母、数字、下划线或它们的组合，最长16位）</label>
+                        字母、数字、下划线或它们的组合，最少3位，最长16位）</label>
                 </div>
 
                 <div class="form-group">
@@ -48,7 +49,7 @@
                         <input type="text" class="form-control" name="name" placeholder="姓名"
                                th:value="${user.name}">
                     </div>
-                    <label class="control-label">（输入类型是汉字、字母、数字、下划线或它们的组合，最长16位）</label>
+                    <label class="control-label">（输入类型是汉字、字母、数字、下划线或它们的组合，最少3位，最长16位）</label>
                 </div>
 
                 <div class="form-group">
@@ -57,7 +58,7 @@
                         <input type="password" class="form-control" name="password" placeholder="密码"
                                th:value="${user.password}">
                     </div>
-                    <label class="control-label">（密码长度至少8位，密码至少包含两个数字，两个大写字母，两个小写字母和一个特殊符号）</label>
+                    <label class="control-label">（密码长度至少6位）</label>
                 </div>
 
 
@@ -66,13 +67,13 @@
 
                     <div class="col-sm-6">
                         <label class="radio-inline">
-                            <input type="radio" value="1" name="state" checked th:value="${user.state}">正常
+                            <input type="radio" value=1 name="state" checked th:checked="${user.state}==1? true:false" >正常
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" value="2" name="state" th:value="${user.state}">禁用
+                            <input type="radio" value=2 name="state" th:checked="${user.state}==2? true:false">禁用
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" value="0" name="state" th:value="${user.state}">未认证
+                            <input type="radio" value=0 name="state" th:checked="${user.state}==0? true:false">未认证
                         </label>
                     </div>
                 </div>
@@ -90,7 +91,7 @@
                 <div class="form-group">
                     <label class="col-sm-1 control-label">有效期</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control date form_date" name="userName" placeholder="有效期"
+                        <input type="text" class="form-control date form_date" name="expiredDate" placeholder="有效期"
                                th:value="${user.expiredDate}">
                     </div>
                     <label class="control-label">（置空表示永不过期）</label>
@@ -99,7 +100,7 @@
                 <div class="form-group">
                     <label class="col-sm-1 control-label">电话</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" name="userName" placeholder="联系电话"
+                        <input type="text" class="form-control" name="tel" placeholder="联系电话"
                                th:value="${user.tel}">
                     </div>
                     <label class="control-label">（格式：139xxxxxxxx）</label>
@@ -108,7 +109,7 @@
                 <div class="form-group">
                     <label class="col-sm-1 control-label">邮箱</label>
                     <div class="col-sm-4">
-                        <input type="text" class="form-control" name="userName" placeholder="电子邮箱"
+                        <input type="text" class="form-control" name="email" placeholder="电子邮箱"
                                th:value="${user.email}">
                     </div>
                     <label class="control-label">（格式：xxx@xxx.com）</label>
@@ -184,15 +185,14 @@
             fields:{
                 userName: {/*键名username和input name值对应*/
                     message: 'The user is not valid',
-//                    threshold :  6 , //有6字符以上才发送ajax请求，（input中输入一个字符，插件会向服务器发送一次，设置限制，6字符以上才开始）
                     validators: {
                         notEmpty: {/*非空提示*/
                             message: '用户名不能为空'
                         },
                         stringLength: {/*长度提示*/
                             min: 3,
-                            max: 30,
-                            message: '用户名长度必须在3到30之间'
+                            max: 16,
+                            message: '用户名长度必须在3到16之间'
                         },
                         remote: {//ajax验证。server result:{"valid",true or false} 向服务发送当前input name值，获得一个json数据。例表示正确：{"valid",true}
                             url: '/user/checkUserExists',//验证地址
@@ -203,8 +203,8 @@
                             data: function(validator) {
                                 return {
                                     userId: /*[[${user.userId}]]*/null,
-                                    oldRole:/*[[${user.userName}]]*/null,
-                                    newRole: $('input[name="userName"]').val()
+                                    oldUserName:/*[[${user.userName}]]*/null,
+                                    newUserName: $('input[name="userName"]').val()
                                 };
                             }
                         },
@@ -223,8 +223,8 @@
                         },
                         stringLength: {/*长度提示*/
                             min: 3,
-                            max: 30,
-                            message: '用户名长度必须在3到30之间'
+                            max: 16,
+                            message: '昵称长度必须在3到16之间'
                         }
 
                     }
@@ -239,11 +239,11 @@
                         stringLength: {/*长度提示*/
                             min: 6,
                             max: 30,
-                            message: '密码长度必须在3到30之间'
-                        }
+                            message: '密码长度必须在6到30之间'
+                        },
                         regexp: {
                             regexp: /^[a-zA-Z0-9_\.]+$/,
-                            message: '用户名由数字字母下划线和.组成'
+                            message: '密码只能由由数字字母下划线和.组成'
                         }
                     }
                 }
@@ -256,6 +256,7 @@
             var $form = $(this);
             $form.bootstrapValidator().on('success.form.bv', function(e) {
                 // 阻止默认事件提交
+                console.log("success.form.bv阻止默认事件提交");
                 e.preventDefault();
             });
         });

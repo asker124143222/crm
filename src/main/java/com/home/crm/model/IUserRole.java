@@ -11,4 +11,5 @@ public interface IUserRole {
     String getUserName();
     Integer getRoleId();
     String getRole();
+    String getDescription();
 }

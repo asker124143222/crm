@@ -29,11 +29,17 @@ public interface UserService {
 
     List<IUserRole> findUserRoleByUserName(String userName);
 
+    List<IUserRole> findAllUserRoleByUserId(Integer userId);
+
     List<ISysPermission> findUserRolePermissionByUserName(String userName);
 
     Page<User> findAllByUserNameContains(String userName, Pageable pageable);
 
     void deleteAllUserByUserIdList(List<Integer> userIdList);
+
+    void deleteAllUserRoleByUserIdList(List<Integer> userIdList);
+
+    void deleteAllUserRoleByUserId(Integer userId);
 
     void grantUserRole(Integer userId,List<Integer> roleIdList);
     

@@ -41,7 +41,7 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     @Query(value="insert into SysUserRole(userId,roleId) VALUES(?1,?2)",nativeQuery = true)
     void insertUserRole(Integer userId,Integer roleId);
 
-    @Query(value="select a.userId,a.userName,c.roleId,c.role from user a\n" +
+    @Query(value="select a.userId,a.userName,c.roleId,c.role,c.description from user a\n" +
             "inner join sysuserrole b on a.userId = b.userId \n" +
             "inner join sysrole c on b.roleId=c.roleId and c.available=1\n" +
             "where a.userName=?1",
@@ -51,6 +51,15 @@ public interface UserRepository extends JpaRepository<User,Integer> {
             "where a.userName=?1",
     nativeQuery = true)
     List<IUserRole> findUserRoleByUserName(String userName);
+
+    @Query(value="select a.roleId,a.role,a.description,c.userId,c.userName from SysRole a\n" +
+            "left join SysUserRole b on a.roleId=b.roleId and a.available=1 and b.userId=?1\n" +
+            "left join user c on c.userId=b.userId;",
+    countQuery = "select count(*) from SysRole a\n" +
+            "left join SysUserRole b on a.roleId=b.roleId and a.available=1 and b.userId=?1\n" +
+            "left join user c on c.userId=b.userId;",
+    nativeQuery = true)
+    List<IUserRole> findAllUserRoleByUserId(Integer userId);
 
     @Query(value="select a.userId,a.userName,d.permissionId,d.permission,d.permissionName from user a \n" +
             "inner join sysuserrole b on a.userId = b.userId \n" +

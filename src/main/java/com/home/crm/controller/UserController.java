@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.home.crm.entity.User;
+import com.home.crm.model.IUserRole;
 import com.home.crm.service.UserService;
 import com.home.crm.utils.EncryptUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -21,7 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -174,8 +177,114 @@ public class UserController {
      * @return
      */
     @RequestMapping("/delete")
+    @ResponseBody
     @RequiresPermissions("user:del")//权限管理;
-    public String userDel(){
-        return "/user/userDel";
+    public Object userDel(@RequestParam String userIdList){
+        if(userIdList==null || userIdList.isEmpty())
+        {
+            return "0";
+        }
+        String[] sList = userIdList.split(",");
+        List<Integer> idList = new ArrayList<>();
+        for (String s:sList )
+        {
+            if(s.equalsIgnoreCase("1"))
+                return "0";
+            idList.add(Integer.parseInt(s));
+
+        }
+        Map<String,String> map = new HashMap<>();
+        try {
+            userService.deleteAllUserByUserIdList(idList);
+            map.put("success","true");
+            map.put("url","/user/ulist");
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            map.put("error","true");
+        }
+
+        return map;
     }
+
+    @RequestMapping(value="/toListUserRole/{userId}")
+    public String listUserRole(@PathVariable("userId")Integer userId,Map<String, Object> map)
+    {
+        User user = userService.findUserById(userId).orElse(new User());
+        map.put("user",user);
+        return "/user/userRole";
+    }
+
+
+    @RequestMapping(value = "/toGetUserRole/{userId}")
+    @ResponseBody
+    public Object getUserRole(@PathVariable("userId")Integer userId,Map<String, Object> map)
+    {
+        if(userId==null)
+            return null;
+
+        List<IUserRole> list = userService.findAllUserRoleByUserId(userId);
+        ObjectMapper mapper=new ObjectMapper();
+        String jsonString="";
+        try {
+            jsonString=mapper.writeValueAsString(list);
+//            System.out.print(jsonString);
+        } catch (JsonGenerationException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return jsonString;
+    }
+
+
+
+
+    @RequestMapping(value="/toGrantUserRole")
+    @ResponseBody
+    public Object grantUserRole(Integer userId, String roleIdList)
+    {
+        if(userId==1) return 0;
+        Map<String,String> map = new HashMap<>();
+        if(roleIdList==null || roleIdList.isEmpty())
+        {
+            try {
+                userService.deleteAllUserRoleByUserId(userId);
+                map.put("success","true");
+                map.put("url","/user/ulist");
+                return map;
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+                map.put("sucess","false");
+                map.put("url","/user/ulist");
+                return map;
+            }
+        }
+        String[] sList = roleIdList.split(",");
+        List<Integer> idList = new ArrayList<>();
+        for (String s:sList )
+        {
+            idList.add(Integer.parseInt(s));
+        }
+
+        try {
+            userService.grantUserRole(userId,idList);
+            map.put("sucess","true");
+            map.put("url","/user/ulist");
+
+            return map;
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            map.put("sucess","false");
+            map.put("url","/user/ulist");
+            return map;
+        }
+    }
+
+
 }

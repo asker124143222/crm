@@ -36,7 +36,7 @@
 
     <div class="panel panel-default" style="margin-bottom: 2px">
         <div class="panel-body">
-            <form class="form-inline" th:action="@{/user/role}">
+            <div class="form-inline">
                 <div class="form-group">
                     <label class="left20">用户名称</label>
                     <input type="text" class="form-control" id="search" name="role" placeholder="用户名称"
@@ -44,7 +44,7 @@
                     <input type="button" id="btnQuery" style="margin-left: 20px" class="btn btn-default btn-primary"
                            value="查 询">
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -245,10 +245,10 @@
                 return { classes: strclass }
             },
             onLoadSuccess: function () {
-                console.log("数据加载成功！");
+                console.log("用户数据加载成功！");
             },
             onLoadError: function () {
-                console.log("数据加载失败！");
+                console.log("用户数据加载失败！");
             },
             onDblClickRow: function (row, $element) {
 
@@ -285,17 +285,17 @@
                 alert("请选中一行数据");
             }
             else {
-                var idList = selectedLine[0].roleId;
+                var idList = selectedLine[0].userId;
                 for (var i = 1; i < selectedLine.length; i++) {
-                    idList += ','+ selectedLine[i].roleId;
+                    idList += ','+ selectedLine[i].userId;
                 }
 //                console.log(idList);
 
-                var deleteUrl = "/user/roleDelete";
+                var deleteUrl = "/user/delete";
                 $.ajax({
                     type:"post",
                     url:deleteUrl,
-                    data:{roleIdList:idList},
+                    data:{userIdList:idList},
                     dataType:"json",
                     success:function (result) {
 //                        console.log(result);
@@ -318,9 +318,9 @@
                 alert("请选中一行数据");
             }
             else {
-                var idList = selectedLine[0].roleId;
+                var idList = selectedLine[0].userId;
 
-                var url = "/user/plist/"+idList;
+                var url = "/user/toListUserRole/"+idList;
                 $('#container').load(url);
             }
         });

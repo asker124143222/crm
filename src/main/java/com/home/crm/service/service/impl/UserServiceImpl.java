@@ -38,6 +38,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<IUserRole> findAllUserRoleByUserId(Integer userId) {
+        return userRepository.findAllUserRoleByUserId(userId);
+    }
+
+    @Override
     public List<ISysPermission> findUserRolePermissionByUserName(String userName) {
         return userRepository.findUserRolePermissionByUserName(userName);
     }
@@ -81,6 +86,18 @@ public class UserServiceImpl implements UserService {
     public void deleteAllUserByUserIdList(List<Integer> userIdList) {
         userRepository.deleteAllUserRoleByUserIdList(userIdList);
         userRepository.deleteAllUserByUserIdList(userIdList);
+    }
+
+    @Transactional
+    @Override
+    public void deleteAllUserRoleByUserIdList(List<Integer> userIdList) {
+        userRepository.deleteAllUserRoleByUserIdList(userIdList);
+    }
+
+    @Transactional
+    @Override
+    public void deleteAllUserRoleByUserId(Integer userId) {
+        userRepository.deleteAllUserRoleByUserId(userId);
     }
 
     @Transactional

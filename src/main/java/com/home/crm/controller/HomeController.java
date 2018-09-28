@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * @Author: xu.dm
  * @Date: 2018/8/11 16:09
- * @Description:
+ * @Description: 登录验证，首页
  */
 @Controller
 public class HomeController {
@@ -55,6 +55,7 @@ public class HomeController {
         LoginResult loginResult = loginService.login(userName,password);
         if(loginResult.isLogin())
         {
+            map.put("userName",userName);
             return "/index";
         }
         else {

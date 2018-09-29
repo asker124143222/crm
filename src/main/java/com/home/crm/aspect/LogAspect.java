@@ -55,7 +55,10 @@ public class LogAspect {
     @AfterReturning(pointcut = "log()",returning = "result")
     public void doAfterReturning(Object result)
     {
-        logger.info("方法返回hashcode：{}",result.hashCode());
+        if(result!=null)
+            logger.info("方法返回hashcode：{}",result.hashCode());
+        else
+            logger.info("方法返回hashcode：{}","null");
     }
 
 }

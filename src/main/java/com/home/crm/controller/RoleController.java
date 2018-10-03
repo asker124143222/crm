@@ -43,7 +43,7 @@ public class RoleController {
     @RequestMapping(value="/role")
     @ResponseBody
     @RequiresPermissions("role:view")
-    public Object getRole(HttpServletRequest request,HttpServletResponse response, Map<String, Object> map)
+    public Object getRole(HttpServletRequest request,HttpServletResponse response)
     {
 
         int pageSize = 10;
@@ -62,6 +62,7 @@ public class RoleController {
             e.printStackTrace();
         }
 
+        Map<String, Object> map = new HashMap<>();
 
         String strRole=request.getParameter("searchText")==null ? "": request.getParameter("searchText");
 
@@ -75,22 +76,22 @@ public class RoleController {
         map.put("total",sysRolePage.getTotalElements());
         map.put("rows",sysRolePage.getContent());
 
-//        return map;
+        return map;
 
-        ObjectMapper mapper=new ObjectMapper();
-        String jsonString="";
-        try {
-            jsonString=mapper.writeValueAsString(map);
-//            System.out.print(jsonString);
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return jsonString;
+//        ObjectMapper mapper=new ObjectMapper();
+//        String jsonString="";
+//        try {
+//            jsonString=mapper.writeValueAsString(map);
+////            System.out.print(jsonString);
+//        } catch (JsonGenerationException e) {
+//            e.printStackTrace();
+//        } catch (JsonMappingException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return jsonString;
 
     }
 
@@ -151,7 +152,7 @@ public class RoleController {
 
 
     @RequestMapping(value = "/roleEdit/{id}")
-    @RequiresPermissions("role:add")
+    @RequiresPermissions("role:edit")
     public String edit(@PathVariable("id")Integer id,Map<String,Object> map)
     {
         SysRole sysRole = roleService.findById(id).orElse(new SysRole());
@@ -193,6 +194,7 @@ public class RoleController {
     }
 
     @RequestMapping(value = "/plist/{roleId}")
+    @RequiresPermissions("role:authorize")
     public String permissionList(@PathVariable("roleId")Integer roleId,Map<String, Object> map)
     {
         SysRole sysRole = roleService.findById(roleId).orElse(new SysRole());
@@ -202,6 +204,7 @@ public class RoleController {
 
     @RequestMapping("/getPermission/{roleId}")
     @ResponseBody
+    @RequiresPermissions("role:authorize")
     public Object getRolePermission(@PathVariable("roleId")Integer roleId,Map<String, Object> map)
     {
         if(roleId==null)
@@ -226,7 +229,7 @@ public class RoleController {
 
     @RequestMapping(value = "/toAuthorize")
     @ResponseBody
-//    @RequiresPermissions("role:authorize")
+    @RequiresPermissions("role:authorize")
     public Object toAuthorize(Integer roleId,String permissionIdList)
     {
         if(roleId==1) return 0;

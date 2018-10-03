@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.home.crm.entity.User;
 import com.home.crm.model.IUserRole;
+import com.home.crm.service.LoginService;
 import com.home.crm.service.UserService;
 import com.home.crm.utils.EncryptUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.omg.PortableServer.REQUEST_PROCESSING_POLICY_ID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +43,8 @@ public class UserController {
 
     @Resource
     UserService userService;
+    @Resource
+    LoginService loginService;
     /**
      * 用户查询.
      * @return
@@ -53,7 +57,7 @@ public class UserController {
     @RequestMapping(value="/getUserList")
     @RequiresPermissions("user:view")//权限管理;
     @ResponseBody
-    public Object getUserList(HttpServletRequest request, HttpServletResponse response, Map<String, Object> map)
+    public Object getUserList(HttpServletRequest request, HttpServletResponse response)
     {
         int pageSize = 10;
         try {
@@ -71,6 +75,7 @@ public class UserController {
             e.printStackTrace();
         }
 
+        Map<String, Object> map = new HashMap<>();
 
         String strUserName=request.getParameter("searchText")==null ? "": request.getParameter("searchText");
 
@@ -83,21 +88,22 @@ public class UserController {
         map.put("total",userPage.getTotalElements());
         map.put("rows",userPage.getContent());
 
+        return map;
 
-        ObjectMapper mapper=new ObjectMapper();
-        String jsonString="";
-        try {
-            jsonString=mapper.writeValueAsString(map);
-//            System.out.print(jsonString);
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return jsonString;
+//        ObjectMapper mapper=new ObjectMapper();
+//        String jsonString="";
+//        try {
+//            jsonString=mapper.writeValueAsString(map);
+////            System.out.print(jsonString);
+//        } catch (JsonGenerationException e) {
+//            e.printStackTrace();
+//        } catch (JsonMappingException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return jsonString;
 
     }
 
@@ -120,10 +126,10 @@ public class UserController {
         {
             return "0";
         }
-        if(user.getCreateTime()==null)
-            user.setCreateTime(LocalDateTime.now());
+
         user.setSalt(this.salt);
         if(user.getUserId()==null) {
+            user.setCreateTime(LocalDateTime.now());
             String encryptPwd = new EncryptUtils(user.getCredentialsSalt(), this.algorithmName, this.hashIterations).encrypt(user.getPassword());
             user.setPassword(encryptPwd);
         }
@@ -164,7 +170,7 @@ public class UserController {
 
 
     @RequestMapping(value = "/edit/{id}")
-    @RequiresPermissions("user:add")
+    @RequiresPermissions("user:edit")
     public String edit(@PathVariable("id")Integer id, Map<String,Object> map)
     {
         User user = userService.findUserById(id).orElse(new User());
@@ -208,6 +214,7 @@ public class UserController {
     }
 
     @RequestMapping(value="/toListUserRole/{userId}")
+    @RequiresPermissions("role:edit")
     public String listUserRole(@PathVariable("userId")Integer userId,Map<String, Object> map)
     {
         User user = userService.findUserById(userId).orElse(new User());
@@ -218,26 +225,30 @@ public class UserController {
 
     @RequestMapping(value = "/toGetUserRole/{userId}")
     @ResponseBody
-    public Object getUserRole(@PathVariable("userId")Integer userId,Map<String, Object> map)
+    @RequiresPermissions("role:edit")
+    public Object getUserRole(@PathVariable("userId")Integer userId)
     {
         if(userId==null)
             return null;
 
         List<IUserRole> list = userService.findAllUserRoleByUserId(userId);
-        ObjectMapper mapper=new ObjectMapper();
-        String jsonString="";
-        try {
-            jsonString=mapper.writeValueAsString(list);
-//            System.out.print(jsonString);
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        return jsonString;
+        return list;
+
+//        ObjectMapper mapper=new ObjectMapper();
+//        String jsonString="";
+//        try {
+//            jsonString=mapper.writeValueAsString(list);
+////            System.out.print(jsonString);
+//        } catch (JsonGenerationException e) {
+//            e.printStackTrace();
+//        } catch (JsonMappingException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return jsonString;
     }
 
 
@@ -245,6 +256,7 @@ public class UserController {
 
     @RequestMapping(value="/toGrantUserRole")
     @ResponseBody
+    @RequiresPermissions("user:edit")
     public Object grantUserRole(Integer userId, String roleIdList)
     {
         if(userId==1) return 0;
@@ -284,6 +296,110 @@ public class UserController {
             map.put("url","/user/ulist");
             return map;
         }
+    }
+
+    @RequestMapping(value="/toChangePassword")
+    public String toChangePassword(String password,String newPassword,String newPassword2)
+    {
+        return "/user/changePwd";
+    }
+
+    @RequestMapping(value="/changePassword",method = RequestMethod.POST)
+    @ResponseBody
+    public Object changePassword(HttpServletRequest request)
+    {
+        Map<String,String> map = new HashMap<>();
+        String password = request.getParameter("password");
+        String newPassword = request.getParameter("newPassword");
+        String newPassword2 = request.getParameter("newPassword2");
+
+        if(newPassword==null)
+        {
+            map.put("success","false");
+            map.put("result","密码不能为空");
+            return map;
+        }
+
+        if(!newPassword.equals(newPassword2))
+        {
+            map.put("success","false");
+            map.put("result","两次密码输入不一样");
+            return map;
+        }
+
+        if(newPassword.length()<6)
+        {
+            map.put("success","false");
+            map.put("result","密码长度必须大于6位");
+            return map;
+        }
+
+
+        String userName = loginService.getCurrentUserName();
+        if(userName==null || userName.isEmpty())
+        {
+            map.put("success","false");
+            map.put("result","用户错误");
+            return map;
+        }
+        User user = userService.findByUserName(userName);
+        if(user==null)
+        {
+            map.put("success","false");
+            map.put("result","用户错误");
+            return map;
+        }
+
+        String encryptPwd = new EncryptUtils(user.getCredentialsSalt(),this.algorithmName,this.hashIterations).encrypt(password);
+        if(!encryptPwd.equals(user.getPassword()))
+        {
+            map.put("success","false");
+            map.put("result","当前用户密码不正确");
+            return map;
+        }
+
+        String encryptNewPwd = new EncryptUtils(user.getCredentialsSalt(),this.algorithmName,this.hashIterations).encrypt(newPassword);
+        user.setPassword(encryptNewPwd);
+        userService.save(user);
+        map.put("success","true");
+        map.put("result","密码修改成功，请重新登录");
+        map.put("url","/logout");
+        return map;
+    }
+
+    @RequestMapping(value="/toCheckPwd")
+    @ResponseBody
+    public Object checkCurrentPwd(@RequestParam String password)
+    {
+        Map<String,Boolean> map = new HashMap<>();
+        if(password==null)
+        {
+            map.put("valid",false);
+            return map;
+        }
+
+        String userName = loginService.getCurrentUserName();
+        if(userName==null || userName.isEmpty())
+        {
+            map.put("valid",false);
+            return map;
+        }
+        User user = userService.findByUserName(userName);
+        if(user==null)
+        {
+            map.put("valid",false);
+            return map;
+        }
+
+        String encryptPwd = new EncryptUtils(user.getCredentialsSalt(),this.algorithmName,this.hashIterations).encrypt(password);
+        if(!encryptPwd.equals(user.getPassword()))
+        {
+            map.put("valid",false);
+            return map;
+        }
+
+        map.put("valid",true);
+        return map;
     }
 
 

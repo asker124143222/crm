@@ -31,6 +31,8 @@ public class HomeController {
     @Resource
     DefaultKaptcha defaultKaptcha;
 
+    private long verifyTTL = 60;//验证码过期时间60秒
+
     @RequestMapping({"/","/index"})
     public String index(){
         return"/index";
@@ -51,7 +53,8 @@ public class HomeController {
         try {
             // 生产验证码字符串并保存到session中
             String createText = defaultKaptcha.createText();
-            httpServletRequest.getSession().setAttribute("verifyCode", createText);
+            httpServletRequest.getSession(true).setAttribute("verifyCode", createText);
+            httpServletRequest.getSession(true).setAttribute("verifyCodeTTL", System.currentTimeMillis());
             // 使用生产的验证码字符串返回一个BufferedImage对象并转为byte写入到byte数组中
             BufferedImage bufferedImage = defaultKaptcha.createImage(createText);
             ImageIO.write(bufferedImage, "jpg", jpegOutputStream);
@@ -94,6 +97,24 @@ public class HomeController {
 
         String verifyCode = request.getParameter("verifyCode");
         String rightCode = (String) request.getSession().getAttribute("verifyCode");
+        Long verifyCodeTTL = (Long)request.getSession().getAttribute("verifyCodeTTL");
+        Long currentMilllis = System.currentTimeMillis();
+        if(rightCode==null || verifyCodeTTL==null)
+        {
+            map.put("msg","请刷新图片，输入验证码！");
+            map.put("userName",userName);
+            map.put("password",password);
+            return "/user/login";
+        }
+        Long expiredTime = (currentMilllis-verifyCodeTTL)/1000;
+        if(expiredTime>this.verifyTTL)
+        {
+            map.put("msg","验证码过期，请刷新图片重新输入！");
+            map.put("userName",userName);
+            map.put("password",password);
+            return "/user/login";
+        }
+
         if(!verifyCode.equalsIgnoreCase(rightCode))
         {
             map.put("msg","验证码错误，请刷新图片重新输入！");

@@ -9,5 +9,6 @@ import com.home.crm.model.LoginResult;
  */
 public interface LoginService {
     LoginResult login(String userName,String password);
+    String getCurrentUserName();
     void logout();
 }

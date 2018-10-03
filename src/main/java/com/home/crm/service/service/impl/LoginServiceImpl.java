@@ -72,4 +72,11 @@ public class LoginServiceImpl implements LoginService {
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
     }
+
+    @Override
+    public String getCurrentUserName() {
+        Subject currentUser = SecurityUtils.getSubject();
+        Session session = currentUser.getSession();
+        return (String)session.getAttribute("userName");
+    }
 }

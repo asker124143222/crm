@@ -2,6 +2,7 @@ package com.home.crm.controller;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.home.crm.model.LoginResult;
+import com.home.crm.service.LogService;
 import com.home.crm.service.LoginService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,11 +31,14 @@ public class HomeController {
     @Resource
     DefaultKaptcha defaultKaptcha;
 
+    @Resource
+    LogService logService;
+
     private long verifyTTL = 60;//验证码过期时间60秒
 
     @RequestMapping({"/", "/index"})
     public String index() {
-        return "/index";
+        return "index";
     }
 
 
@@ -123,10 +127,12 @@ public class HomeController {
         LoginResult loginResult = loginService.login(userName, password);
         if (loginResult.isLogin()) {
             map.put("userName", userName);
+            logService.writeLog("登录","登录成功");
             return "/index";
         } else {
             map.put("msg", loginResult.getResult());
             map.put("userName", userName);
+            logService.writeLog("登录","登录失败");
             return "/user/login";
         }
     }
@@ -134,6 +140,7 @@ public class HomeController {
     @RequestMapping("/logout")
     public String logOut(HttpSession session) {
         loginService.logout();
+        logService.writeLog("logout","成功");
         return "/user/login";
     }
 

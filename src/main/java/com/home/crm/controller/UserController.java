@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.home.crm.entity.User;
 import com.home.crm.model.IUserRole;
+import com.home.crm.service.LogService;
 import com.home.crm.service.LoginService;
 import com.home.crm.service.UserService;
 import com.home.crm.utils.EncryptUtils;
@@ -45,6 +46,8 @@ public class UserController {
     UserService userService;
     @Resource
     LoginService loginService;
+    @Resource
+    LogService logService;
     /**
      * 用户查询.
      * @return
@@ -142,6 +145,10 @@ public class UserController {
         }
         try {
             userService.save(user);
+            if(user.getUserId()==null)
+                logService.writeLog("新增用户","用户："+user.getUserName());
+            else
+                logService.writeLog("修改用户","用户："+user.getUserName());
             return "/user/ulist";
         }catch (Exception e)
         {
@@ -204,6 +211,7 @@ public class UserController {
             userService.deleteAllUserByUserIdList(idList);
             map.put("success","true");
             map.put("url","/user/ulist");
+            logService.writeLog("删除用户","用户id："+userIdList);
         }catch (Exception e)
         {
             e.printStackTrace();
@@ -232,7 +240,6 @@ public class UserController {
             return null;
 
         List<IUserRole> list = userService.findAllUserRoleByUserId(userId);
-
         return list;
 
 //        ObjectMapper mapper=new ObjectMapper();
@@ -267,6 +274,7 @@ public class UserController {
                 userService.deleteAllUserRoleByUserId(userId);
                 map.put("success","true");
                 map.put("url","/user/ulist");
+                logService.writeLog("角色清除","用户ID："+userId);
                 return map;
             }catch (Exception e)
             {
@@ -287,6 +295,7 @@ public class UserController {
             userService.grantUserRole(userId,idList);
             map.put("sucess","true");
             map.put("url","/user/ulist");
+            logService.writeLog("角色分配","用户ID："+userId+" 角色id列表："+roleIdList);
 
             return map;
         }catch (Exception e)
@@ -364,6 +373,7 @@ public class UserController {
         map.put("success","true");
         map.put("result","密码修改成功，请重新登录");
         map.put("url","/logout");
+        logService.writeLog("修改密码","成功");
         return map;
     }
 

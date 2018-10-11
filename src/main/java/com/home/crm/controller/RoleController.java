@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.home.crm.entity.SysRole;
 import com.home.crm.model.ISysRolePermission;
+import com.home.crm.service.LogService;
 import com.home.crm.service.RoleService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.data.domain.Page;
@@ -38,6 +39,8 @@ import java.util.Map;
 public class RoleController {
     @Resource
     RoleService roleService;
+    @Resource
+    LogService logService;
 
     //,produces="application/json;charset=UTF-8"
     @RequestMapping(value="/role")
@@ -119,10 +122,11 @@ public class RoleController {
         {
             return "0";
         }
-        if(sysRole.getCreateTime()==null)
+        if(sysRole.getRoleId()==null)
             sysRole.setCreateTime(LocalDateTime.now());
         try {
             roleService.save(sysRole);
+            logService.writeLog("操作角色（新增或修改）","角色："+sysRole.getRole());
             return  "/user/rlist";
         }catch (Exception e)
         {
@@ -184,6 +188,7 @@ public class RoleController {
         {
             map.put("success","true");
             map.put("url","/user/rlist");
+            logService.writeLog("删除角色","角色id："+roleIdList);
         }
         else
         {
@@ -205,26 +210,27 @@ public class RoleController {
     @RequestMapping("/getPermission/{roleId}")
     @ResponseBody
     @RequiresPermissions("role:authorize")
-    public Object getRolePermission(@PathVariable("roleId")Integer roleId,Map<String, Object> map)
+    public Object getRolePermission(@PathVariable("roleId")Integer roleId)
     {
         if(roleId==null)
             return null;
 
         List<ISysRolePermission> list = roleService.findSysRolePermissionByRoleId(roleId);
-        ObjectMapper mapper=new ObjectMapper();
-        String jsonString="";
-        try {
-            jsonString=mapper.writeValueAsString(list);
-//            System.out.print(jsonString);
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return jsonString;
+        return list;
+//        ObjectMapper mapper=new ObjectMapper();
+//        String jsonString="";
+//        try {
+//            jsonString=mapper.writeValueAsString(list);
+////            System.out.print(jsonString);
+//        } catch (JsonGenerationException e) {
+//            e.printStackTrace();
+//        } catch (JsonMappingException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return jsonString;
     }
 
     @RequestMapping(value = "/toAuthorize")
@@ -240,6 +246,7 @@ public class RoleController {
                 roleService.clearAuthorization(roleId);
                 map.put("success","true");
                 map.put("url","/user/rlist");
+                logService.writeLog("清除角色权限","成功");
                 return map;
             }catch (Exception e)
             {
@@ -260,7 +267,7 @@ public class RoleController {
             roleService.grantAuthorization(roleId,idList);
             map.put("sucess","true");
             map.put("url","/user/rlist");
-
+            logService.writeLog("角色授权","权限列表："+permissionIdList);
             return map;
         }catch (Exception e)
         {

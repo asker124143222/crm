@@ -1,8 +1,6 @@
 package com.home.crm.controller;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.home.crm.entity.User;
 import com.home.crm.model.IUserRole;
 import com.home.crm.service.LogService;
@@ -10,7 +8,6 @@ import com.home.crm.service.LoginService;
 import com.home.crm.service.UserService;
 import com.home.crm.utils.EncryptUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.omg.PortableServer.REQUEST_PROCESSING_POLICY_ID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -133,13 +130,13 @@ public class UserController {
         user.setSalt(this.salt);
         if(user.getUserId()==null) {
             user.setCreateTime(LocalDateTime.now());
-            String encryptPwd = new EncryptUtils(user.getCredentialsSalt(), this.algorithmName, this.hashIterations).encrypt(user.getPassword());
+            String encryptPwd = EncryptUtils.encrypt(user.getPassword(),user.getCredentialsSalt(),this.algorithmName,this.hashIterations);
             user.setPassword(encryptPwd);
         }
         else {
             if(!user.getPassword().equals(password2))
             {
-                String encryptPwd = new EncryptUtils(user.getCredentialsSalt(), this.algorithmName, this.hashIterations).encrypt(user.getPassword());
+                String encryptPwd = EncryptUtils.encrypt(user.getPassword(),user.getCredentialsSalt(),this.algorithmName,this.hashIterations);
                 user.setPassword(encryptPwd);
             }
         }
@@ -356,7 +353,7 @@ public class UserController {
             return map;
         }
 
-        String encryptPwd = new EncryptUtils(user.getCredentialsSalt(),this.algorithmName,this.hashIterations).encrypt(password);
+        String encryptPwd = EncryptUtils.encrypt(password,user.getCredentialsSalt(),this.algorithmName,this.hashIterations);
         if(!encryptPwd.equals(user.getPassword()))
         {
             map.put("success","false");
@@ -364,7 +361,7 @@ public class UserController {
             return map;
         }
 
-        String encryptNewPwd = new EncryptUtils(user.getCredentialsSalt(),this.algorithmName,this.hashIterations).encrypt(newPassword);
+        String encryptNewPwd =EncryptUtils.encrypt(newPassword,user.getCredentialsSalt(),this.algorithmName,this.hashIterations);
         user.setPassword(encryptNewPwd);
         userService.save(user);
         map.put("success","true");
@@ -398,7 +395,7 @@ public class UserController {
             return map;
         }
 
-        String encryptPwd = new EncryptUtils(user.getCredentialsSalt(),this.algorithmName,this.hashIterations).encrypt(password);
+        String encryptPwd = EncryptUtils.encrypt(password,user.getCredentialsSalt(),this.algorithmName,this.hashIterations);
         if(!encryptPwd.equals(user.getPassword()))
         {
             map.put("valid",false);

@@ -9,42 +9,10 @@ import org.apache.shiro.util.ByteSource;
  * @Description:
  */
 public class EncryptUtils {
-    private String salt;
-    private String algorithmName;
-    private int hashIterations;
 
-    public EncryptUtils(String salt, String algorithmName, int hashIterations) {
-        this.salt = salt;
-        this.algorithmName = algorithmName;
-        this.hashIterations = hashIterations;
-    }
-
-    public String encrypt(String str)
+    public static String encrypt(String str,String salt, String algorithmName, int hashIterations)
     {
         return new SimpleHash(algorithmName,str, ByteSource.Util.bytes(salt),hashIterations).toString();
     }
 
-    public String getSalt() {
-        return salt;
-    }
-
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
-
-    public String getAlgorithmName() {
-        return algorithmName;
-    }
-
-    public void setAlgorithmName(String algorithmName) {
-        this.algorithmName = algorithmName;
-    }
-
-    public int getHashIterations() {
-        return hashIterations;
-    }
-
-    public void setHashIterations(int hashIterations) {
-        this.hashIterations = hashIterations;
-    }
 }

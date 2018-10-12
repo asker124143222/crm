@@ -15,4 +15,6 @@ public interface LogService {
     void writeLog(String action,String event);
     void save(SysLog sysLog);
     Page<SysLog> findAll(Pageable pageable);
+    Page<SysLog> findAllByUserNameContains(String userName, Pageable pageable);
+    Page<SysLog> findAll(String searchText,Pageable pageable);
 }

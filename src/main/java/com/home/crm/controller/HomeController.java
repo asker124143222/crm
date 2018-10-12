@@ -132,7 +132,6 @@ public class HomeController {
         } else {
             map.put("msg", loginResult.getResult());
             map.put("userName", userName);
-            logService.writeLog("登录","登录失败");
             return "/user/login";
         }
     }

@@ -145,10 +145,7 @@ public class UserController {
         }
         try {
             userService.save(user);
-            if(user.getUserId()==null)
-                logService.writeLog("新增用户","用户："+user.getUserName());
-            else
-                logService.writeLog("修改用户","用户："+user.getUserName());
+            logService.writeLog("新增或修改用户","用户："+user.getUserName());
             return "/user/ulist";
         }catch (Exception e)
         {
